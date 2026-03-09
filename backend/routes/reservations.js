@@ -22,4 +22,23 @@ router.post("/", (req, res) => {
   res.json({ message: "Reservation created", reservation: newReservation });
 });
 
+router.delete("/:id", (req, res) => {
+  const reservationId = parseInt(req.params.id);
+
+  const reservationIndex = reservations.findIndex(
+    (reservation) => reservation.id === reservationId,
+  );
+
+  if (reservationIndex === -1) {
+    return res.status(404).json({ message: "Reservation not found" });
+  }
+
+  const deletedReservation = reservations.splice(reservationIndex, 1);
+
+  res.json({
+    message: "Reservation deleted successfully",
+    reservation: deletedReservation[0],
+  });
+});
+
 module.exports = router;

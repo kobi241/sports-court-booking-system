@@ -16,6 +16,13 @@ const courts = [
     sport_type: "Basketball",
     price_per_hour: 30,
   },
+  {
+    id: 3,
+    name: "Football Court",
+    location: "Johnson Park",
+    sport_type: "Football",
+    price_per_hour: 25,
+  },
 ];
 
 router.get("/", (req, res) => {
