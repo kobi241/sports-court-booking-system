@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const courtsRoutes = require("./routes/courts");
+const reservationsRoutes = require("./routes/reservations");
 
 const app = express();
 
@@ -15,3 +17,6 @@ const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+app.use("/courts", courtsRoutes);
+app.use("/reservations", reservationsRoutes);
