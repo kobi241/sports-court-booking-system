@@ -3,6 +3,12 @@ import { getCourts, createReservation } from "../services/api";
 
 function CourtsPage() {
   const [courts, setCourts] = useState([]);
+  const [selectedCourt, setSelectedCourt] = useState(null);
+  const [reservationForm, setReservationForm] = useState({
+    user_name: "",
+    date: "",
+    start_time: "",
+  });
 
   useEffect(() => {
     loadCourts();
@@ -13,17 +19,27 @@ function CourtsPage() {
     setCourts(data);
   };
 
-  const handleReserve = async (court) => {
-    const reservation = {
-      court_id: court.id,
-      user_name: "Demo User",
+  const handleSubmitReservation = async (e) => {
+    e.preventDefault();
+
+    const newReservation = {
+      court_id: selectedCourt.id,
+      user_name: reservationForm.user_name,
+      date: reservationForm.date,
+      start_time: reservationForm.start_time,
     };
 
-    await createReservation(reservation);
+    await createReservation(newReservation);
 
-    await loadCourts();
+    setReservationForm({
+      user_name: "",
+      date: "",
+      start_time: "",
+    });
 
-    alert("Reservation created!");
+    setSelectedCourt(null);
+
+    alert("Reservation created successfully!");
   };
 
   return (
@@ -37,9 +53,52 @@ function CourtsPage() {
           <p>Sport: {court.sport_type}</p>
           <p>Price: {court.price_per_hour} €/hour</p>
 
-          <button onClick={() => handleReserve(court)}>Reserve Court</button>
+          <button onClick={() => setSelectedCourt(court)}>Reserve Court</button>
         </div>
       ))}
+      {selectedCourt && (
+        <div>
+          <h2>Reserve {selectedCourt.name}</h2>
+
+          <form onSubmit={handleSubmitReservation}>
+            <input
+              type="text"
+              placeholder="Your name"
+              value={reservationForm.user_name}
+              onChange={(e) =>
+                setReservationForm({
+                  ...reservationForm,
+                  user_name: e.target.value,
+                })
+              }
+            />
+
+            <input
+              type="date"
+              value={reservationForm.date}
+              onChange={(e) =>
+                setReservationForm({
+                  ...reservationForm,
+                  date: e.target.value,
+                })
+              }
+            />
+
+            <input
+              type="time"
+              value={reservationForm.start_time}
+              onChange={(e) =>
+                setReservationForm({
+                  ...reservationForm,
+                  start_time: e.target.value,
+                })
+              }
+            />
+
+            <button type="submit">Confirm Reservation</button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

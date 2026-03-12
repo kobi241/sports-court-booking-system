@@ -17,9 +17,17 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const newReservation = req.body;
+  const newReservation = {
+    id: reservations.length + 1,
+    ...req.body,
+  };
+
   reservations.push(newReservation);
-  res.json({ message: "Reservation created", reservation: newReservation });
+
+  res.json({
+    message: "Reservation created",
+    reservation: newReservation,
+  });
 });
 
 router.delete("/:id", (req, res) => {
