@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const courtsRoutes = require("./routes/courts");
 const reservationsRoutes = require("./routes/reservations");
+const authRoutes = require("./routes/auth");
 
 const app = express();
 
@@ -20,3 +21,4 @@ app.listen(PORT, () => {
 
 app.use("/courts", courtsRoutes);
 app.use("/reservations", reservationsRoutes);
+app.use("/auth", authRoutes);

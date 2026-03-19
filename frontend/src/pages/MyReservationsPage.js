@@ -24,7 +24,7 @@ function MyReservationsPage() {
 
       {reservations.map((reservation) => (
         <div key={reservation.id}>
-          <p>Court ID: {reservation.court_id}</p>
+          <p>Court: {reservation.court_name}</p>
           <p>User: {reservation.user_name}</p>
           <p>Date: {reservation.date}</p>
           <p>Time: {reservation.start_time}</p>
