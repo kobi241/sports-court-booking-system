@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { getCourts, createReservation } from "../services/api";
 
+import styles from "./CourtsPage.module.css";
+
 function CourtsPage() {
   const [courts, setCourts] = useState([]);
   const [selectedCourt, setSelectedCourt] = useState(null);
@@ -44,25 +46,34 @@ function CourtsPage() {
   };
 
   return (
-    <div>
-      <h1>Sports Courts</h1>
+    <div className={styles.container}>
+      <h1 className={styles.title}>Sports Courts</h1>
 
-      {courts.map((court) => (
-        <div key={court.id}>
-          <h3>{court.name}</h3>
-          <p>Location: {court.location}</p>
-          <p>Sport: {court.sport_type}</p>
-          <p>Price: {court.price_per_hour} €/hour</p>
+      <div className={styles.grid}>
+        {courts.map((court) => (
+          <div key={court.id} className={styles.card}>
+            <h3>{court.name}</h3>
+            <p>Location: {court.location}</p>
+            <p>Sport: {court.sport_type}</p>
+            <p>Price: {court.price_per_hour} €/hour</p>
 
-          <button onClick={() => setSelectedCourt(court)}>Reserve Court</button>
-        </div>
-      ))}
+            <button
+              className={styles.button}
+              onClick={() => setSelectedCourt(court)}
+            >
+              Reserve Court
+            </button>
+          </div>
+        ))}
+      </div>
+
       {selectedCourt && (
-        <div>
+        <div className={styles.formContainer}>
           <h2>Reserve {selectedCourt.name}</h2>
 
-          <form onSubmit={handleSubmitReservation}>
+          <form className={styles.form} onSubmit={handleSubmitReservation}>
             <input
+              className={styles.input}
               type="text"
               placeholder="Your name"
               value={reservationForm.user_name}
@@ -75,6 +86,7 @@ function CourtsPage() {
             />
 
             <input
+              className={styles.input}
               type="date"
               value={reservationForm.date}
               onChange={(e) =>
@@ -86,6 +98,7 @@ function CourtsPage() {
             />
 
             <input
+              className={styles.input}
               type="time"
               value={reservationForm.start_time}
               onChange={(e) =>
@@ -96,7 +109,9 @@ function CourtsPage() {
               }
             />
 
-            <button type="submit">Confirm Reservation</button>
+            <button className={styles.button} type="submit">
+              Confirm Reservation
+            </button>
           </form>
         </div>
       )}

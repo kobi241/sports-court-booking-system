@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import styles from "./Navbar.module.css";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -10,18 +11,34 @@ function Navbar() {
   };
 
   return (
-    <nav>
+    <nav className={styles.navbar}>
+      {user && (
+        <span className={styles.welcome}>Welcome, {user.first_name}</span>
+      )}{" "}
+      |{" "}
       {user && (
         <>
-          <Link to="/">Courts</Link> |{" "}
-          <Link to="/reservations">My Reservations</Link> |{" "}
-          <button onClick={handleLogout}>Logout</button>
+          <Link to="/" className={styles.link}>
+            Courts
+          </Link>
+          |{" "}
+          <Link to="/reservations" className={styles.link}>
+            My Reservations
+          </Link>
+          <button onClick={handleLogout} className={styles.logoutButton}>
+            Logout
+          </button>
         </>
       )}
-
       {!user && (
         <>
-          <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
+          <Link to="/login" className={styles.link}>
+            Login
+          </Link>
+          |{" "}
+          <Link to="/register" className={styles.link}>
+            Register
+          </Link>
         </>
       )}
     </nav>

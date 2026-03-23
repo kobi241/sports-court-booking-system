@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+import styles from "./RegisterPage.module.css";
+
 function RegisterPage() {
   const [formData, setFormData] = useState({
     first_name: "",
@@ -55,52 +57,61 @@ function RegisterPage() {
   };
 
   return (
-    <div>
-      <h1>Register</h1>
+    <div className={styles.container}>
+      <div className={styles.card}>
+        <h1 className={styles.title}>Register</h1>
 
-      <form onSubmit={handleRegister}>
-        <input
-          type="text"
-          name="first_name"
-          placeholder="First Name"
-          value={formData.first_name}
-          onChange={handleChange}
-        />
+        <form className={styles.form} onSubmit={handleRegister}>
+          <input
+            className={styles.input}
+            type="text"
+            name="first_name"
+            placeholder="First Name"
+            value={formData.first_name}
+            onChange={handleChange}
+          />
 
-        <input
-          type="text"
-          name="last_name"
-          placeholder="Last Name"
-          value={formData.last_name}
-          onChange={handleChange}
-        />
+          <input
+            className={styles.input}
+            type="text"
+            name="last_name"
+            placeholder="Last Name"
+            value={formData.last_name}
+            onChange={handleChange}
+          />
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-        />
+          <input
+            className={styles.input}
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+          />
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-        />
+          <input
+            className={styles.input}
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+          />
 
-        <input
-          type="password"
-          name="confirm_password"
-          placeholder="Confirm Password"
-          value={formData.confirm_password}
-          onChange={handleChange}
-        />
+          <input
+            className={styles.input}
+            type="password"
+            name="confirm_password"
+            placeholder="Confirm Password"
+            value={formData.confirm_password}
+            onChange={handleChange}
+          />
 
-        <button type="submit">Register</button>
-      </form>
+          <button className={styles.button} type="submit">
+            Register
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

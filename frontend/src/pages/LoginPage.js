@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+import styles from "./LoginPage.module.css";
+
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,12 +36,12 @@ function LoginPage() {
         return;
       }
 
-      // 🔥 Čuvamo user-a
+      // Store user data in localStorage
       localStorage.setItem("user", JSON.stringify(data.user));
 
       alert("Login successful!");
 
-      // 🔥 Preusmerenje
+      // Redirect to home page
       navigate("/");
     } catch (error) {
       console.error(error);
@@ -48,26 +50,32 @@ function LoginPage() {
   };
 
   return (
-    <div>
-      <h1>Login</h1>
+    <div className={styles.container}>
+      <div className={styles.card}>
+        <h1 className={styles.title}>Login</h1>
 
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <form className={styles.form} onSubmit={handleLogin}>
+          <input
+            className={styles.input}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <input
+            className={styles.input}
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-        <button type="submit">Login</button>
-      </form>
+          <button className={styles.button} type="submit">
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
