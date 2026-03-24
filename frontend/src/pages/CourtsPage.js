@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getCourts, createReservation } from "../services/api";
 
+import ReservationModal from "../components/ReservationModal";
 import styles from "./CourtsPage.module.css";
 
 function CourtsPage() {
@@ -34,16 +35,19 @@ function CourtsPage() {
 
     await createReservation(newReservation);
 
+    handleCloseModal();
+
+    alert("Reservation created successfully!");
+  };
+
+  const handleCloseModal = useCallback(() => {
+    setSelectedCourt(null);
     setReservationForm({
       user_name: "",
       date: "",
       start_time: "",
     });
-
-    setSelectedCourt(null);
-
-    alert("Reservation created successfully!");
-  };
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -66,54 +70,14 @@ function CourtsPage() {
           </div>
         ))}
       </div>
-
       {selectedCourt && (
-        <div className={styles.formContainer}>
-          <h2>Reserve {selectedCourt.name}</h2>
-
-          <form className={styles.form} onSubmit={handleSubmitReservation}>
-            <input
-              className={styles.input}
-              type="text"
-              placeholder="Your name"
-              value={reservationForm.user_name}
-              onChange={(e) =>
-                setReservationForm({
-                  ...reservationForm,
-                  user_name: e.target.value,
-                })
-              }
-            />
-
-            <input
-              className={styles.input}
-              type="date"
-              value={reservationForm.date}
-              onChange={(e) =>
-                setReservationForm({
-                  ...reservationForm,
-                  date: e.target.value,
-                })
-              }
-            />
-
-            <input
-              className={styles.input}
-              type="time"
-              value={reservationForm.start_time}
-              onChange={(e) =>
-                setReservationForm({
-                  ...reservationForm,
-                  start_time: e.target.value,
-                })
-              }
-            />
-
-            <button className={styles.button} type="submit">
-              Confirm Reservation
-            </button>
-          </form>
-        </div>
+        <ReservationModal
+          selectedCourt={selectedCourt}
+          reservationForm={reservationForm}
+          setReservationForm={setReservationForm}
+          handleSubmitReservation={handleSubmitReservation}
+          handleCloseModal={handleCloseModal}
+        />
       )}
     </div>
   );
