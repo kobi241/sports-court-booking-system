@@ -1,51 +1,57 @@
 const express = require("express");
 const router = express.Router();
+const db = require("../db/connection");
 
-let reservations = [
-  {
-    id: 1,
-    court_id: 1,
-    user_name: "Marko",
-    date: "2024-06-01",
-    start_time: "18:00",
-    end_time: "19:00",
-  },
-];
-
+// GET all reservations
 router.get("/", (req, res) => {
-  res.json(reservations);
-});
+  const query = "SELECT * FROM reservation";
 
-router.post("/", (req, res) => {
-  const newReservation = {
-    id: reservations.length + 1,
-    ...req.body,
-  };
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Database error" });
+    }
 
-  reservations.push(newReservation);
-
-  res.json({
-    message: "Reservation created",
-    reservation: newReservation,
+    res.json(results);
   });
 });
 
-router.delete("/:id", (req, res) => {
-  const reservationId = parseInt(req.params.id);
+// CREATE reservation
+router.post("/", (req, res) => {
+  const { reservation_date, reservation_time, user_id, court_id } = req.body;
 
-  const reservationIndex = reservations.findIndex(
-    (reservation) => reservation.id === reservationId,
+  const query = `
+    INSERT INTO reservation (reservation_date, reservation_time, user_id, court_id)
+    VALUES (?, ?, ?, ?)
+  `;
+
+  db.query(
+    query,
+    [reservation_date, reservation_time, user_id, court_id],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Database error" });
+      }
+
+      res.json({ message: "Reservation created" });
+    },
   );
+});
 
-  if (reservationIndex === -1) {
-    return res.status(404).json({ message: "Reservation not found" });
-  }
+// DELETE reservation
+router.delete("/:id", (req, res) => {
+  const id = req.params.id;
 
-  const deletedReservation = reservations.splice(reservationIndex, 1);
+  const query = "DELETE FROM reservation WHERE id = ?";
 
-  res.json({
-    message: "Reservation deleted successfully",
-    reservation: deletedReservation[0],
+  db.query(query, [id], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    res.json({ message: "Reservation deleted" });
   });
 });
 
