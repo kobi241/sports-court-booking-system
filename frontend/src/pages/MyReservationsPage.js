@@ -19,6 +19,7 @@ function MyReservationsPage() {
     if (!window.confirm("Are you sure you want to cancel this reservation?")) {
       return;
     }
+
     await deleteReservation(id);
     await loadReservations();
   };
@@ -35,11 +36,11 @@ function MyReservationsPage() {
         <div className={styles.list}>
           {reservations.map((reservation) => (
             <div key={reservation.id} className={styles.card}>
-              <p>Court: {reservation.court_name}</p>
-              <p>User: {reservation.user_name}</p>
-              <p>Date: {reservation.date}</p>
-              <p>Time: {reservation.start_time}</p>
-
+              <p>Court Name: {reservation.court_name}</p>
+              <p>User Name: {reservation.user_name}</p>
+              <p>Date: {reservation.reservation_date?.split("T")[0]}</p>{" "}
+              <p>Time: {reservation.reservation_time}</p>
+              <p>Status: {reservation.status}</p>
               <button
                 className={styles.button}
                 onClick={() => handleDeleteReservation(reservation.id)}

@@ -1,7 +1,6 @@
 import { createPortal } from "react-dom";
-import styles from "./ReservationModal.module.css";
-
 import { useEffect } from "react";
+import styles from "./ReservationModal.module.css";
 
 function ReservationModal({
   selectedCourt,
@@ -18,6 +17,7 @@ function ReservationModal({
     };
 
     window.addEventListener("keydown", handleEsc);
+
     return () => {
       window.removeEventListener("keydown", handleEsc);
     };
@@ -31,25 +31,12 @@ function ReservationModal({
         <form className={styles.form} onSubmit={handleSubmitReservation}>
           <input
             className={styles.input}
-            type="text"
-            placeholder="Your name"
-            value={reservationForm.user_name}
-            onChange={(e) =>
-              setReservationForm({
-                ...reservationForm,
-                user_name: e.target.value,
-              })
-            }
-          />
-
-          <input
-            className={styles.input}
             type="date"
-            value={reservationForm.date}
+            value={reservationForm.reservation_date}
             onChange={(e) =>
               setReservationForm({
                 ...reservationForm,
-                date: e.target.value,
+                reservation_date: e.target.value,
               })
             }
           />
@@ -57,11 +44,11 @@ function ReservationModal({
           <input
             className={styles.input}
             type="time"
-            value={reservationForm.start_time}
+            value={reservationForm.reservation_time}
             onChange={(e) =>
               setReservationForm({
                 ...reservationForm,
-                start_time: e.target.value,
+                reservation_time: e.target.value,
               })
             }
           />
@@ -79,9 +66,8 @@ function ReservationModal({
               className={styles.submitButton}
               type="submit"
               disabled={
-                !reservationForm.user_name ||
-                !reservationForm.date ||
-                !reservationForm.start_time
+                !reservationForm.reservation_date ||
+                !reservationForm.reservation_time
               }
             >
               Confirm Reservation

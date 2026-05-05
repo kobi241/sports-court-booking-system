@@ -4,7 +4,18 @@ const db = require("../db/connection");
 
 // GET all reservations
 router.get("/", (req, res) => {
-  const query = "SELECT * FROM reservation";
+  const query = `
+    SELECT 
+      reservation.id,
+      reservation.reservation_date,
+      reservation.reservation_time,
+      reservation.status,
+      court.name AS court_name,
+      users.first_name AS user_name
+    FROM reservation
+    JOIN court ON reservation.court_id = court.id
+    JOIN users ON reservation.user_id = users.id
+  `;
 
   db.query(query, (err, results) => {
     if (err) {
