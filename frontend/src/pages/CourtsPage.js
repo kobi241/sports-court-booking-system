@@ -27,7 +27,6 @@ function CourtsPage() {
     const newReservation = {
       reservation_date: reservationForm.reservation_date,
       reservation_time: reservationForm.reservation_time,
-      user_id: 1,
       court_id: selectedCourt.id,
     };
 
