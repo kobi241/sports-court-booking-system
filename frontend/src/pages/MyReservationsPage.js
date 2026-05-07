@@ -1,10 +1,21 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getReservations, deleteReservation } from "../services/api";
 
 import styles from "./MyReservationsPage.module.css";
 
 function MyReservationsPage() {
   const [reservations, setReservations] = useState([]);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (user?.role === "admin") {
+      navigate("/admin/reservations");
+    }
+  }, [navigate]);
 
   useEffect(() => {
     loadReservations();

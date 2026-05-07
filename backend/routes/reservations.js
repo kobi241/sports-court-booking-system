@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db/connection");
 const authMiddleware = require("../middleware/authMiddleware");
+const adminMiddleware = require("../middleware/adminMiddleware");
 
 // GET reservations for logged-in user
 router.get("/", authMiddleware, (req, res) => {
@@ -28,6 +29,58 @@ router.get("/", authMiddleware, (req, res) => {
     }
 
     res.json(results);
+  });
+});
+
+// GET all reservations for admin
+router.get("/admin", authMiddleware, adminMiddleware, (req, res) => {
+  const query = `
+      SELECT 
+        reservation.id,
+        reservation.reservation_date,
+        reservation.reservation_time,
+        reservation.status,
+        court.name AS court_name,
+        users.first_name AS user_name
+      FROM reservation
+      JOIN court ON reservation.court_id = court.id
+      JOIN users ON reservation.user_id = users.id
+    `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    res.json(results);
+  });
+});
+
+// UPDATE reservation status by admin
+router.patch("/:id/status", authMiddleware, adminMiddleware, (req, res) => {
+  const reservationId = req.params.id;
+  const { status } = req.body;
+
+  if (status !== "approved" && status !== "rejected") {
+    return res.status(400).json({
+      message: "Invalid status. Status must be approved or rejected.",
+    });
+  }
+
+  const query = "UPDATE reservation SET status = ? WHERE id = ?";
+
+  db.query(query, [status, reservationId], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Reservation not found" });
+    }
+
+    res.json({ message: `Reservation ${status}` });
   });
 });
 

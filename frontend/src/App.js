@@ -7,6 +7,7 @@ import MyReservationsPage from "./pages/MyReservationsPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminReservationsPage from "./pages/AdminReservationsPage";
 
 function App() {
   return (
@@ -29,6 +30,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <MyReservationsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/reservations"
+            element={
+              <ProtectedRoute>
+                <AdminReservationsPage />
               </ProtectedRoute>
             }
           />

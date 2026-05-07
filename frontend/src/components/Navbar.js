@@ -4,6 +4,7 @@ import styles from "./Navbar.module.css";
 function Navbar() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
+  const isAdmin = user?.role === "admin";
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -17,7 +18,7 @@ function Navbar() {
         <span className={styles.welcome}>Welcome, {user.first_name}</span>
       )}{" "}
       |{" "}
-      {user && (
+      {user && !isAdmin && (
         <>
           <Link to="/" className={styles.link}>
             Courts
@@ -25,6 +26,16 @@ function Navbar() {
           |{" "}
           <Link to="/reservations" className={styles.link}>
             My Reservations
+          </Link>
+          <button onClick={handleLogout} className={styles.logoutButton}>
+            Logout
+          </button>
+        </>
+      )}
+      {user && isAdmin && (
+        <>
+          <Link to="/admin/reservations" className={styles.link}>
+            Admin Reservations
           </Link>
           <button onClick={handleLogout} className={styles.logoutButton}>
             Logout

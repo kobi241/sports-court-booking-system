@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getCourts, createReservation } from "../services/api";
 
 import ReservationModal from "../components/ReservationModal";
@@ -11,6 +12,16 @@ function CourtsPage() {
     reservation_date: "",
     reservation_time: "",
   });
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (user?.role === "admin") {
+      navigate("/admin/reservations");
+    }
+  }, [navigate]);
 
   useEffect(() => {
     loadCourts();

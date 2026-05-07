@@ -40,3 +40,21 @@ export const deleteReservation = async (id) => {
 
   return response.json();
 };
+
+export const getAdminReservations = async () => {
+  const response = await fetch(`${API_BASE_URL}/reservations/admin`, {
+    headers: getAuthHeaders(),
+  });
+
+  return response.json();
+};
+
+export const updateReservationStatus = async (id, status) => {
+  const response = await fetch(`${API_BASE_URL}/reservations/${id}/status`, {
+    method: "PATCH",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ status }),
+  });
+
+  return response.json();
+};
