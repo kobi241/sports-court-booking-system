@@ -89,21 +89,59 @@ router.post("/", authMiddleware, (req, res) => {
   const { reservation_date, reservation_time, court_id } = req.body;
   const userId = req.user.id;
 
-  const query = `
-    INSERT INTO reservation (reservation_date, reservation_time, user_id, court_id)
-    VALUES (?, ?, ?, ?)
+  const reservationDateTime = new Date(
+    `${reservation_date}T${reservation_time}`,
+  );
+
+  const currentDateTime = new Date();
+
+  if (reservationDateTime < currentDateTime) {
+    return res.status(400).json({
+      message: "Reservation date and time cannot be in the past",
+    });
+  }
+
+  const checkAvailabilityQuery = `
+    SELECT * FROM reservation
+    WHERE court_id = ?
+    AND reservation_date = ?
+    AND reservation_time = ?
+    AND status IN ('pending', 'approved')
   `;
 
   db.query(
-    query,
-    [reservation_date, reservation_time, userId, court_id],
-    (err, result) => {
+    checkAvailabilityQuery,
+    [court_id, reservation_date, reservation_time],
+    (err, existingReservations) => {
       if (err) {
         console.error(err);
         return res.status(500).json({ error: "Database error" });
       }
 
-      res.json({ message: "Reservation created" });
+      if (existingReservations.length > 0) {
+        return res.status(400).json({
+          message:
+            "This court is already reserved at the selected date and time",
+        });
+      }
+
+      const insertReservationQuery = `
+        INSERT INTO reservation (reservation_date, reservation_time, user_id, court_id)
+        VALUES (?, ?, ?, ?)
+      `;
+
+      db.query(
+        insertReservationQuery,
+        [reservation_date, reservation_time, userId, court_id],
+        (err, result) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Database error" });
+          }
+
+          res.json({ message: "Reservation created" });
+        },
+      );
     },
   );
 });

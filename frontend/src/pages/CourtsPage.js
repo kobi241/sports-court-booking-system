@@ -41,7 +41,12 @@ function CourtsPage() {
       court_id: selectedCourt.id,
     };
 
-    await createReservation(newReservation);
+    const result = await createReservation(newReservation);
+
+    if (result.message !== "Reservation created") {
+      alert(result.message || "Reservation could not be created");
+      return;
+    }
 
     handleCloseModal();
 
