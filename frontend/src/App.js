@@ -8,6 +8,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminReservationsPage from "./pages/AdminReservationsPage";
+import AdminCourtsPage from "./pages/AdminCourtsPage";
 
 function App() {
   return (
@@ -38,6 +39,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <AdminReservationsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/courts"
+            element={
+              <ProtectedRoute>
+                <AdminCourtsPage />
               </ProtectedRoute>
             }
           />

@@ -34,6 +34,10 @@ function Navbar() {
       )}
       {user && isAdmin && (
         <>
+          <Link to="/admin/courts" className={styles.link}>
+            Admin Courts
+          </Link>
+          |{" "}
           <Link to="/admin/reservations" className={styles.link}>
             Admin Reservations
           </Link>
