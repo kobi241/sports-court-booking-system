@@ -2,6 +2,31 @@ import { createPortal } from "react-dom";
 import { useEffect } from "react";
 import styles from "./ReservationModal.module.css";
 
+const generateTimeSlots = (openingHours) => {
+  if (!openingHours) {
+    return [];
+  }
+
+  const [start, end] = openingHours.split(" - ");
+
+  const startHour = Number(start.slice(0, 2));
+  const endHour = Number(end.slice(0, 2));
+
+  const slots = [];
+
+  for (let hour = startHour; hour < endHour; hour++) {
+    const slotStart = `${String(hour).padStart(2, "0")}:00:00`;
+    const slotEnd = `${String(hour + 1).padStart(2, "0")}:00`;
+
+    slots.push({
+      value: slotStart,
+      label: `${slotStart.slice(0, 5)} - ${slotEnd}`,
+    });
+  }
+
+  return slots;
+};
+
 function ReservationModal({
   selectedCourt,
   reservationForm,
@@ -9,6 +34,8 @@ function ReservationModal({
   handleSubmitReservation,
   handleCloseModal,
 }) {
+  const timeSlots = generateTimeSlots(selectedCourt.opening_hours);
+
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape") {
@@ -41,9 +68,8 @@ function ReservationModal({
             }
           />
 
-          <input
+          <select
             className={styles.input}
-            type="time"
             value={reservationForm.reservation_time}
             onChange={(e) =>
               setReservationForm({
@@ -51,7 +77,15 @@ function ReservationModal({
                 reservation_time: e.target.value,
               })
             }
-          />
+          >
+            <option value="">Select time slot</option>
+
+            {timeSlots.map((slot) => (
+              <option key={slot.value} value={slot.value}>
+                {slot.label}
+              </option>
+            ))}
+          </select>
 
           <div className={styles.actions}>
             <button

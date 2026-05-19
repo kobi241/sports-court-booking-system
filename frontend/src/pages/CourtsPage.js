@@ -61,23 +61,63 @@ function CourtsPage() {
     });
   }, []);
 
+  const groupedFacilities = courts.reduce((groups, court) => {
+    const facilityId = court.facility_id;
+
+    if (!groups[facilityId]) {
+      groups[facilityId] = {
+        id: facilityId,
+        name: court.facility_name,
+        address: court.address,
+        city: court.city,
+        opening_hours: court.opening_hours,
+        courts: [],
+      };
+    }
+
+    groups[facilityId].courts.push(court);
+
+    return groups;
+  }, {});
+
+  const facilities = Object.values(groupedFacilities);
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Sports Courts</h1>
 
-      <div className={styles.grid}>
-        {courts.map((court) => (
-          <div key={court.id} className={styles.card}>
-            <h3>{court.name}</h3>
-            <p>Location: {court.location}</p>
-            <p>Description: {court.description}</p>
+      <div className={styles.facilitiesList}>
+        {facilities.map((facility) => (
+          <div key={facility.id} className={styles.facilityCard}>
+            <div className={styles.facilityHeader}>
+              <h2>{facility.name}</h2>
+              <p>📍 {facility.address}</p>
+              <p>🏙 {facility.city}</p>
+              <p>🕒 {facility.opening_hours}</p>
+            </div>
 
-            <button
-              className={styles.button}
-              onClick={() => setSelectedCourt(court)}
-            >
-              Reserve Court
-            </button>
+            <div className={styles.grid}>
+              {facility.courts.map((court) => (
+                <div key={court.id} className={styles.card}>
+                  <span className={styles.badge}>{court.sport_type}</span>
+
+                  <h3>{court.name}</h3>
+
+                  <p>{court.indoor_outdoor}</p>
+                  <p>Capacity: {court.capacity} players</p>
+                  <p className={styles.price}>{court.hourly_price} €/hour</p>
+
+                  <p>{court.description}</p>
+
+                  <button
+                    className={styles.button}
+                    onClick={() => setSelectedCourt(court)}
+                  >
+                    Reserve Court
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         ))}
       </div>

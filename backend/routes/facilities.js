@@ -5,6 +5,27 @@ const db = require("../db/connection");
 const authMiddleware = require("../middleware/authMiddleware");
 const adminMiddleware = require("../middleware/adminMiddleware");
 
+const openingHoursRegex =
+  /^([01]\d|2[0-3]):[0-5]\d - (([01]\d|2[0-3]):[0-5]\d|24:00)$/;
+
+const timeToMinutes = (time) => {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+};
+
+const isValidOpeningHours = (openingHours) => {
+  if (!openingHoursRegex.test(openingHours)) {
+    return false;
+  }
+
+  const [openingTime, closingTime] = openingHours.split(" - ");
+
+  const openingMinutes = timeToMinutes(openingTime);
+  const closingMinutes = timeToMinutes(closingTime);
+
+  return openingMinutes < closingMinutes;
+};
+
 router.get("/", (req, res) => {
   const query = "SELECT * FROM facility";
 
@@ -23,9 +44,16 @@ router.post("/", authMiddleware, adminMiddleware, (req, res) => {
   const { name, address, city, contact_email, phone_number, opening_hours } =
     req.body;
 
-  if (!name || !address || !city) {
+  if (!name || !address || !city || !opening_hours) {
     return res.status(400).json({
-      message: "Name, address and city are required",
+      message: "Name, address, city and opening hours are required",
+    });
+  }
+
+  if (!isValidOpeningHours(opening_hours)) {
+    return res.status(400).json({
+      message:
+        "Opening hours must be in format HH:MM - HH:MM, closing time can be 24:00, and opening time must be before closing time",
     });
   }
 
@@ -66,9 +94,16 @@ router.put("/:id", authMiddleware, adminMiddleware, (req, res) => {
   const { name, address, city, contact_email, phone_number, opening_hours } =
     req.body;
 
-  if (!name || !address || !city) {
+  if (!name || !address || !city || !opening_hours) {
     return res.status(400).json({
-      message: "Name, address and city are required",
+      message: "Name, address, city and opening hours are required",
+    });
+  }
+
+  if (!isValidOpeningHours(opening_hours)) {
+    return res.status(400).json({
+      message:
+        "Opening hours must be in format HH:MM - HH:MM, closing time can be 24:00, and opening time must be before closing time",
     });
   }
 

@@ -30,6 +30,24 @@ const emptyCourtForm = {
   hourly_price: "",
 };
 
+const openingHoursRegex =
+  /^([01]\d|2[0-3]):[0-5]\d - (([01]\d|2[0-3]):[0-5]\d|24:00)$/;
+
+const timeToMinutes = (time) => {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+};
+
+const isValidOpeningHours = (openingHours) => {
+  if (!openingHoursRegex.test(openingHours)) {
+    return false;
+  }
+
+  const [openingTime, closingTime] = openingHours.split(" - ");
+
+  return timeToMinutes(openingTime) < timeToMinutes(closingTime);
+};
+
 function AdminCourtsPage() {
   const [facilities, setFacilities] = useState([]);
   const [courts, setCourts] = useState([]);
@@ -71,6 +89,23 @@ function AdminCourtsPage() {
 
   const handleCreateFacility = async (e) => {
     e.preventDefault();
+
+    if (
+      !newFacility.name ||
+      !newFacility.address ||
+      !newFacility.city ||
+      !newFacility.opening_hours
+    ) {
+      alert("Facility name, address, city and opening hours are required");
+      return;
+    }
+
+    if (!isValidOpeningHours(newFacility.opening_hours)) {
+      alert(
+        "Opening hours must be in format HH:MM - HH:MM, closing time can be 24:00, and opening time must be before closing time. Example: 07:00 - 23:00",
+      );
+      return;
+    }
 
     let result;
 
@@ -287,7 +322,7 @@ function AdminCourtsPage() {
           <input
             type="text"
             name="opening_hours"
-            placeholder="Opening Hours"
+            placeholder="Opening Hours, e.g. 07:00 - 23:00"
             value={newFacility.opening_hours}
             onChange={handleFacilityChange}
             className={styles.input}
