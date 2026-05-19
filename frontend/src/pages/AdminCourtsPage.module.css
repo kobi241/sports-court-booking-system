@@ -1,0 +1,140 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px;
+}
+
+.title {
+  font-size: 34px;
+  margin-bottom: 24px;
+  color: #1f2937;
+}
+
+.formCard,
+.facilityCard {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.input {
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.button {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 600;
+  background: #2563eb;
+  color: white;
+}
+
+.button:hover {
+  background: #1d4ed8;
+}
+
+.deleteButton {
+  background: #dc2626;
+}
+
+.deleteButton:hover {
+  background: #b91c1c;
+}
+
+.secondaryButton {
+  background: #6b7280;
+}
+
+.secondaryButton:hover {
+  background: #4b5563;
+}
+
+.facilityHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 16px;
+  margin-bottom: 18px;
+}
+
+.facilityInfo h2 {
+  margin: 0 0 8px;
+  color: #111827;
+}
+
+.facilityInfo p {
+  margin: 4px 0;
+  color: #4b5563;
+}
+
+.courtsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.courtCard {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 16px;
+  background: #f9fafb;
+}
+
+.courtCard h4 {
+  margin: 0 0 8px;
+  color: #111827;
+}
+
+.badge {
+  display: inline-block;
+  background: #dbeafe;
+  color: #1d4ed8;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.emptyMessage {
+  color: #6b7280;
+  font-style: italic;
+}
+
+@media (max-width: 700px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .facilityHeader {
+    flex-direction: column;
+  }
+}
