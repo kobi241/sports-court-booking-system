@@ -121,3 +121,27 @@ export const deleteCourt = async (id) => {
 
   return response.json();
 };
+
+export const getEligibleReviewCourts = async () => {
+  const response = await fetch(`${API_BASE_URL}/reviews/my-eligible-courts`, {
+    headers: getAuthHeaders(),
+  });
+
+  return response.json();
+};
+
+export const createReview = async (reviewData) => {
+  const response = await fetch(`${API_BASE_URL}/reviews`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(reviewData),
+  });
+
+  return response.json();
+};
+
+export const getCourtReviews = async (courtId) => {
+  const response = await fetch(`${API_BASE_URL}/reviews/court/${courtId}`);
+
+  return response.json();
+};

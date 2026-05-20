@@ -5,7 +5,7 @@ const db = require("../db/connection");
 const authMiddleware = require("../middleware/authMiddleware");
 const adminMiddleware = require("../middleware/adminMiddleware");
 
-// GET all courts with facility information
+// GET all courts with facility information and review statistics
 router.get("/", (req, res) => {
   const query = `
     SELECT
@@ -20,9 +20,25 @@ router.get("/", (req, res) => {
       facility.name AS facility_name,
       facility.address,
       facility.city,
-      facility.opening_hours
+      facility.opening_hours,
+      ROUND(AVG(review.rating), 1) AS average_rating,
+      COUNT(review.id) AS review_count
     FROM court
     JOIN facility ON court.facility_id = facility.id
+    LEFT JOIN review ON review.court_id = court.id
+    GROUP BY
+      court.id,
+      court.name,
+      court.description,
+      court.sport_type,
+      court.indoor_outdoor,
+      court.capacity,
+      court.hourly_price,
+      court.facility_id,
+      facility.name,
+      facility.address,
+      facility.city,
+      facility.opening_hours
   `;
 
   db.query(query, (err, results) => {

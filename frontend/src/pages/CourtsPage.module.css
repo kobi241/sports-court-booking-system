@@ -114,3 +114,35 @@
     padding: 20px;
   }
 }
+
+.reviewSummary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 12px 0;
+  color: #4b5563;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.reviewSummary span:first-child {
+  color: #f59e0b;
+}
+
+.secondaryButton {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background: #eff6ff;
+  color: #2563eb;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.secondaryButton:hover {
+  background: #dbeafe;
+}

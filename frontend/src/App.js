@@ -9,6 +9,7 @@ import RegisterPage from "./pages/RegisterPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminReservationsPage from "./pages/AdminReservationsPage";
 import AdminCourtsPage from "./pages/AdminCourtsPage";
+import MyReviewsPage from "./pages/MyReviewsPage";
 
 function App() {
   return (
@@ -31,6 +32,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <MyReservationsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-reviews"
+            element={
+              <ProtectedRoute>
+                <MyReviewsPage />
               </ProtectedRoute>
             }
           />

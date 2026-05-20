@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCourts, createReservation } from "../services/api";
-
+import { getCourts, createReservation, getCourtReviews } from "../services/api";
 import ReservationModal from "../components/ReservationModal";
+import ReviewModal from "../components/ReviewModal";
+
 import styles from "./CourtsPage.module.css";
 
 function CourtsPage() {
   const [courts, setCourts] = useState([]);
   const [selectedCourt, setSelectedCourt] = useState(null);
+  const [selectedReviewsCourt, setSelectedReviewsCourt] = useState(null);
+  const [courtReviews, setCourtReviews] = useState(null);
   const [reservationForm, setReservationForm] = useState({
     reservation_date: "",
     reservation_time: "",
@@ -61,6 +64,18 @@ function CourtsPage() {
     });
   }, []);
 
+  const handleOpenReviews = async (court) => {
+    setSelectedReviewsCourt(court);
+
+    const data = await getCourtReviews(court.id);
+    setCourtReviews(data);
+  };
+
+  const handleCloseReviews = () => {
+    setSelectedReviewsCourt(null);
+    setCourtReviews(null);
+  };
+
   const groupedFacilities = courts.reduce((groups, court) => {
     const facilityId = court.facility_id;
 
@@ -107,6 +122,24 @@ function CourtsPage() {
                   <p>Capacity: {court.capacity} players</p>
                   <p className={styles.price}>{court.hourly_price} €/hour</p>
 
+                  <div className={styles.reviewSummary}>
+                    {court.review_count > 0 ? (
+                      <>
+                        <span>⭐ {court.average_rating}/5</span>
+                        <span>{court.review_count} reviews</span>
+                        <button
+                          type="button"
+                          className={styles.secondaryButton}
+                          onClick={() => handleOpenReviews(court)}
+                        >
+                          View Reviews
+                        </button>
+                      </>
+                    ) : (
+                      <span>No reviews yet</span>
+                    )}
+                  </div>
+
                   <p>{court.description}</p>
 
                   <button
@@ -129,6 +162,13 @@ function CourtsPage() {
           setReservationForm={setReservationForm}
           handleSubmitReservation={handleSubmitReservation}
           handleCloseModal={handleCloseModal}
+        />
+      )}
+      {selectedReviewsCourt && (
+        <ReviewModal
+          selectedReviewsCourt={selectedReviewsCourt}
+          courtReviews={courtReviews}
+          handleCloseReviews={handleCloseReviews}
         />
       )}
     </div>
