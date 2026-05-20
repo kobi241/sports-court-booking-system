@@ -30,8 +30,7 @@ const emptyCourtForm = {
   hourly_price: "",
 };
 
-const openingHoursRegex =
-  /^([01]\d|2[0-3]):[0-5]\d - (([01]\d|2[0-3]):[0-5]\d|24:00)$/;
+const openingHoursRegex = /^(0\d|1\d|2[0-3]):00 - ((0\d|1\d|2[0-3]):00|24:00)$/;
 
 const timeToMinutes = (time) => {
   const [hours, minutes] = time.split(":").map(Number);
@@ -101,9 +100,7 @@ function AdminCourtsPage() {
     }
 
     if (!isValidOpeningHours(newFacility.opening_hours)) {
-      alert(
-        "Opening hours must be in format HH:MM - HH:MM, closing time can be 24:00, and opening time must be before closing time. Example: 07:00 - 23:00",
-      );
+      alert("Opening hours must use full-hour format like 07:00 - 23:00");
       return;
     }
 

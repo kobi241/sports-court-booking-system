@@ -9,18 +9,22 @@ router.get("/", authMiddleware, (req, res) => {
   const userId = req.user.id;
 
   const query = `
-    SELECT 
-      reservation.id,
-      reservation.reservation_date,
-      reservation.reservation_time,
-      reservation.status,
-      court.name AS court_name,
-      users.first_name AS user_name
-    FROM reservation
-    JOIN court ON reservation.court_id = court.id
-    JOIN users ON reservation.user_id = users.id
-    WHERE reservation.user_id = ?
-  `;
+  SELECT 
+    reservation.id,
+    DATE_FORMAT(reservation.reservation_date, '%Y-%m-%d') AS reservation_date,
+    reservation.reservation_time,
+    reservation.status,
+    court.name AS court_name,
+    facility.name AS facility_name,
+    facility.address AS facility_address,
+    facility.city AS facility_city,
+    users.first_name AS user_name
+  FROM reservation
+  JOIN court ON reservation.court_id = court.id
+  JOIN facility ON court.facility_id = facility.id
+  JOIN users ON reservation.user_id = users.id
+  WHERE reservation.user_id = ?
+`;
 
   db.query(query, [userId], (err, results) => {
     if (err) {
@@ -35,17 +39,21 @@ router.get("/", authMiddleware, (req, res) => {
 // GET all reservations for admin
 router.get("/admin", authMiddleware, adminMiddleware, (req, res) => {
   const query = `
-      SELECT 
-        reservation.id,
-        reservation.reservation_date,
-        reservation.reservation_time,
-        reservation.status,
-        court.name AS court_name,
-        users.first_name AS user_name
-      FROM reservation
-      JOIN court ON reservation.court_id = court.id
-      JOIN users ON reservation.user_id = users.id
-    `;
+  SELECT 
+    reservation.id,
+    DATE_FORMAT(reservation.reservation_date, '%Y-%m-%d') AS reservation_date,
+    reservation.reservation_time,
+    reservation.status,
+    court.name AS court_name,
+    facility.name AS facility_name,
+    facility.address AS facility_address,
+    facility.city AS facility_city,
+    users.first_name AS user_name
+  FROM reservation
+  JOIN court ON reservation.court_id = court.id
+  JOIN facility ON court.facility_id = facility.id
+  JOIN users ON reservation.user_id = users.id
+`;
 
   db.query(query, (err, results) => {
     if (err) {

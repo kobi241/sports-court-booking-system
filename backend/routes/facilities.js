@@ -5,8 +5,7 @@ const db = require("../db/connection");
 const authMiddleware = require("../middleware/authMiddleware");
 const adminMiddleware = require("../middleware/adminMiddleware");
 
-const openingHoursRegex =
-  /^([01]\d|2[0-3]):[0-5]\d - (([01]\d|2[0-3]):[0-5]\d|24:00)$/;
+const openingHoursRegex = /^(0\d|1\d|2[0-3]):00 - ((0\d|1\d|2[0-3]):00|24:00)$/;
 
 const timeToMinutes = (time) => {
   const [hours, minutes] = time.split(":").map(Number);
@@ -53,7 +52,7 @@ router.post("/", authMiddleware, adminMiddleware, (req, res) => {
   if (!isValidOpeningHours(opening_hours)) {
     return res.status(400).json({
       message:
-        "Opening hours must be in format HH:MM - HH:MM, closing time can be 24:00, and opening time must be before closing time",
+        "Opening hours must use full-hour format like 07:00 - 23:00, closing time can be 24:00, and opening time must be before closing time",
     });
   }
 

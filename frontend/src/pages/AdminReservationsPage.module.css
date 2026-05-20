@@ -186,3 +186,19 @@
   background: #2563eb;
   color: white;
 }
+
+.approveButton {
+  background: #22c55e;
+}
+
+.approveButton:hover {
+  background: #16a34a;
+}
+
+.rejectButton {
+  background: #ef4444;
+}
+
+.rejectButton:hover {
+  background: #dc2626;
+}
