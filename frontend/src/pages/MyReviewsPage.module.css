@@ -229,3 +229,40 @@ textarea.input {
   color: #f59e0b;
   margin-bottom: 8px;
 }
+
+.deleteButton {
+  border: none;
+  background: #ef4444;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.deleteButton:hover {
+  background: #dc2626;
+}
+
+.cancelButton {
+  border: none;
+  background: #e5e7eb;
+  color: #111827;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.cancelButton:hover {
+  background: #d1d5db;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}

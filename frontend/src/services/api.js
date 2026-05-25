@@ -145,3 +145,22 @@ export const getCourtReviews = async (courtId) => {
 
   return response.json();
 };
+
+export const updateReview = async (reviewId, reviewData) => {
+  const response = await fetch(`${API_BASE_URL}/reviews/${reviewId}`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(reviewData),
+  });
+
+  return response.json();
+};
+
+export const deleteReview = async (reviewId) => {
+  const response = await fetch(`${API_BASE_URL}/reviews/${reviewId}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+
+  return response.json();
+};

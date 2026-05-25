@@ -149,4 +149,74 @@ router.get("/court/:courtId", (req, res) => {
   });
 });
 
+// UPDATE review
+router.put("/:id", authMiddleware, (req, res) => {
+  const reviewId = req.params.id;
+  const userId = req.user.id;
+  const { rating, comment } = req.body;
+
+  if (!rating || !comment) {
+    return res.status(400).json({
+      message: "Rating and comment are required",
+    });
+  }
+
+  if (rating < 1 || rating > 5) {
+    return res.status(400).json({
+      message: "Rating must be between 1 and 5",
+    });
+  }
+
+  const query = `
+    UPDATE review
+    SET rating = ?, comment = ?
+    WHERE id = ? AND user_id = ?
+  `;
+
+  db.query(query, [rating, comment, reviewId, userId], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        message: "Review not found or you are not allowed to edit it",
+      });
+    }
+
+    res.json({
+      message: "Review updated successfully",
+    });
+  });
+});
+
+// DELETE review
+router.delete("/:id", authMiddleware, (req, res) => {
+  const reviewId = req.params.id;
+  const userId = req.user.id;
+
+  const query = `
+    DELETE FROM review
+    WHERE id = ? AND user_id = ?
+  `;
+
+  db.query(query, [reviewId, userId], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        message: "Review not found or you are not allowed to delete it",
+      });
+    }
+
+    res.json({
+      message: "Review deleted successfully",
+    });
+  });
+});
+
 module.exports = router;
