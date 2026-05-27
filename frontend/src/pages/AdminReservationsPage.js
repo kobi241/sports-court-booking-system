@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
-import { getAdminReservations, updateReservationStatus } from "../services/api";
+import {
+  getAdminReservations,
+  updateReservationStatus,
+  getUserProfileById,
+} from "../services/api";
 
+import UserProfileModal from "../components/UserProfileModal";
 import styles from "./AdminReservationsPage.module.css";
 
 const formatTimeSlot = (time) => {
@@ -13,6 +18,7 @@ const formatTimeSlot = (time) => {
 function AdminReservationsPage() {
   const [reservations, setReservations] = useState([]);
   const [statusFilter, setStatusFilter] = useState("all");
+  const [selectedUserProfile, setSelectedUserProfile] = useState(null);
 
   useEffect(() => {
     loadReservations();
@@ -36,6 +42,15 @@ function AdminReservationsPage() {
     await loadReservations();
   };
 
+  const handleOpenUserProfile = async (userId) => {
+    const data = await getUserProfileById(userId);
+    setSelectedUserProfile(data);
+  };
+
+  const handleCloseUserProfile = () => {
+    setSelectedUserProfile(null);
+  };
+
   const filteredReservations =
     statusFilter === "all"
       ? reservations
@@ -48,41 +63,17 @@ function AdminReservationsPage() {
       <h1 className={styles.title}>Admin Reservations</h1>
 
       <div className={styles.filters}>
-        <button
-          className={`${styles.filterButton} ${
-            statusFilter === "all" ? styles.activeFilter : ""
-          }`}
-          onClick={() => setStatusFilter("all")}
-        >
-          All
-        </button>
-
-        <button
-          className={`${styles.filterButton} ${
-            statusFilter === "pending" ? styles.activeFilter : ""
-          }`}
-          onClick={() => setStatusFilter("pending")}
-        >
-          Pending
-        </button>
-
-        <button
-          className={`${styles.filterButton} ${
-            statusFilter === "approved" ? styles.activeFilter : ""
-          }`}
-          onClick={() => setStatusFilter("approved")}
-        >
-          Approved
-        </button>
-
-        <button
-          className={`${styles.filterButton} ${
-            statusFilter === "rejected" ? styles.activeFilter : ""
-          }`}
-          onClick={() => setStatusFilter("rejected")}
-        >
-          Rejected
-        </button>
+        {["all", "pending", "approved", "rejected"].map((status) => (
+          <button
+            key={status}
+            className={`${styles.filterButton} ${
+              statusFilter === status ? styles.activeFilter : ""
+            }`}
+            onClick={() => setStatusFilter(status)}
+          >
+            {status.charAt(0).toUpperCase() + status.slice(1)}
+          </button>
+        ))}
       </div>
 
       {filteredReservations.length === 0 ? (
@@ -98,6 +89,14 @@ function AdminReservationsPage() {
                   <div>
                     <p className={styles.label}>User</p>
                     <h2>{reservation.user_name}</h2>
+
+                    <button
+                      type="button"
+                      className={styles.profileButton}
+                      onClick={() => handleOpenUserProfile(reservation.user_id)}
+                    >
+                      View Profile
+                    </button>
                   </div>
 
                   <span className={`${styles.status} ${statusClass}`}>
@@ -160,6 +159,13 @@ function AdminReservationsPage() {
             );
           })}
         </div>
+      )}
+
+      {selectedUserProfile && (
+        <UserProfileModal
+          userProfile={selectedUserProfile}
+          handleCloseUserProfile={handleCloseUserProfile}
+        />
       )}
     </div>
   );

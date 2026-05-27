@@ -10,6 +10,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminReservationsPage from "./pages/AdminReservationsPage";
 import AdminCourtsPage from "./pages/AdminCourtsPage";
 import MyReviewsPage from "./pages/MyReviewsPage";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (
@@ -40,6 +41,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <MyReviewsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
               </ProtectedRoute>
             }
           />

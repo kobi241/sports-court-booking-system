@@ -3,6 +3,7 @@ const router = express.Router();
 
 const db = require("../db/connection");
 const authMiddleware = require("../middleware/authMiddleware");
+const adminMiddleware = require("../middleware/adminMiddleware");
 
 // GET logged-in user profile
 router.get("/", authMiddleware, (req, res) => {
@@ -60,6 +61,40 @@ router.put("/", authMiddleware, (req, res) => {
     res.json({
       message: "Profile updated successfully",
     });
+  });
+});
+
+// GET user profile by id for admin
+router.get("/:userId", authMiddleware, adminMiddleware, (req, res) => {
+  const userId = req.params.userId;
+
+  const query = `
+    SELECT
+      id,
+      first_name,
+      last_name,
+      email,
+      role,
+      phone_number,
+      bio,
+      profile_image
+    FROM users
+    WHERE id = ?
+  `;
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    res.json(results[0]);
   });
 });
 

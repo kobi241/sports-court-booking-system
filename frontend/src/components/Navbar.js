@@ -31,6 +31,10 @@ function Navbar() {
           <Link to="/my-reviews" className={styles.link}>
             My Reviews
           </Link>
+          |{" "}
+          <Link to="/profile" className={styles.link}>
+            Profile
+          </Link>
           <button onClick={handleLogout} className={styles.logoutButton}>
             Logout
           </button>

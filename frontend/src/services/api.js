@@ -164,3 +164,29 @@ export const deleteReview = async (reviewId) => {
 
   return response.json();
 };
+
+export const getProfile = async () => {
+  const response = await fetch(`${API_BASE_URL}/profile`, {
+    headers: getAuthHeaders(),
+  });
+
+  return response.json();
+};
+
+export const updateProfile = async (profileData) => {
+  const response = await fetch(`${API_BASE_URL}/profile`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(profileData),
+  });
+
+  return response.json();
+};
+
+export const getUserProfileById = async (userId) => {
+  const response = await fetch(`${API_BASE_URL}/profile/${userId}`, {
+    headers: getAuthHeaders(),
+  });
+
+  return response.json();
+};

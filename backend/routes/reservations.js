@@ -41,6 +41,7 @@ router.get("/admin", authMiddleware, adminMiddleware, (req, res) => {
   const query = `
   SELECT 
     reservation.id,
+    reservation.user_id,
     DATE_FORMAT(reservation.reservation_date, '%Y-%m-%d') AS reservation_date,
     reservation.reservation_time,
     reservation.status,
