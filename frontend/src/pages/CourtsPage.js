@@ -81,13 +81,16 @@ function CourtsPage() {
   };
 
   const filteredCourts = courts.filter((court) => {
-    const searchValue = searchTerm.toLowerCase();
+    const searchWords = searchTerm.toLowerCase().trim().split(/\s+/);
+
+    const searchableText = `
+    ${court.city}
+    ${court.sport_type}
+  `.toLowerCase();
 
     const matchesSearch =
-      court.city.toLowerCase().includes(searchValue) ||
-      court.sport_type.toLowerCase().includes(searchValue) ||
-      court.facility_name.toLowerCase().includes(searchValue) ||
-      court.name.toLowerCase().includes(searchValue);
+      searchTerm.trim() === "" ||
+      searchWords.every((word) => searchableText.includes(word));
 
     const matchesType =
       typeFilter === "all" || court.indoor_outdoor === typeFilter;
