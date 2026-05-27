@@ -8,9 +8,13 @@ import styles from "./CourtsPage.module.css";
 
 function CourtsPage() {
   const [courts, setCourts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
+
   const [selectedCourt, setSelectedCourt] = useState(null);
   const [selectedReviewsCourt, setSelectedReviewsCourt] = useState(null);
   const [courtReviews, setCourtReviews] = useState(null);
+
   const [reservationForm, setReservationForm] = useState({
     reservation_date: "",
     reservation_time: "",
@@ -76,7 +80,22 @@ function CourtsPage() {
     setCourtReviews(null);
   };
 
-  const groupedFacilities = courts.reduce((groups, court) => {
+  const filteredCourts = courts.filter((court) => {
+    const searchValue = searchTerm.toLowerCase();
+
+    const matchesSearch =
+      court.city.toLowerCase().includes(searchValue) ||
+      court.sport_type.toLowerCase().includes(searchValue) ||
+      court.facility_name.toLowerCase().includes(searchValue) ||
+      court.name.toLowerCase().includes(searchValue);
+
+    const matchesType =
+      typeFilter === "all" || court.indoor_outdoor === typeFilter;
+
+    return matchesSearch && matchesType;
+  });
+
+  const groupedFacilities = filteredCourts.reduce((groups, court) => {
     const facilityId = court.facility_id;
 
     if (!groups[facilityId]) {
@@ -101,59 +120,83 @@ function CourtsPage() {
     <div className={styles.container}>
       <h1 className={styles.title}>Sports Courts</h1>
 
-      <div className={styles.facilitiesList}>
-        {facilities.map((facility) => (
-          <div key={facility.id} className={styles.facilityCard}>
-            <div className={styles.facilityHeader}>
-              <h2>{facility.name}</h2>
-              <p>📍 {facility.address}</p>
-              <p>🏙 {facility.city}</p>
-              <p>🕒 {facility.opening_hours}</p>
-            </div>
+      <div className={styles.searchBar}>
+        <input
+          type="text"
+          placeholder="Search by city or sport..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className={styles.searchInput}
+        />
 
-            <div className={styles.grid}>
-              {facility.courts.map((court) => (
-                <div key={court.id} className={styles.card}>
-                  <span className={styles.badge}>{court.sport_type}</span>
-
-                  <h3>{court.name}</h3>
-
-                  <p>{court.indoor_outdoor}</p>
-                  <p>Capacity: {court.capacity} players</p>
-                  <p className={styles.price}>{court.hourly_price} €/hour</p>
-
-                  <div className={styles.reviewSummary}>
-                    {court.review_count > 0 ? (
-                      <>
-                        <span>⭐ {court.average_rating}/5</span>
-                        <span>{court.review_count} reviews</span>
-                        <button
-                          type="button"
-                          className={styles.secondaryButton}
-                          onClick={() => handleOpenReviews(court)}
-                        >
-                          View Reviews
-                        </button>
-                      </>
-                    ) : (
-                      <span>No reviews yet</span>
-                    )}
-                  </div>
-
-                  <p>{court.description}</p>
-
-                  <button
-                    className={styles.button}
-                    onClick={() => setSelectedCourt(court)}
-                  >
-                    Reserve Court
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
+        <select
+          value={typeFilter}
+          onChange={(e) => setTypeFilter(e.target.value)}
+          className={styles.filterSelect}
+        >
+          <option value="all">All types</option>
+          <option value="indoor">Indoor</option>
+          <option value="outdoor">Outdoor</option>
+        </select>
       </div>
+
+      {facilities.length === 0 ? (
+        <p className={styles.emptyMessage}>No courts match your search.</p>
+      ) : (
+        <div className={styles.facilitiesList}>
+          {facilities.map((facility) => (
+            <div key={facility.id} className={styles.facilityCard}>
+              <div className={styles.facilityHeader}>
+                <h2>{facility.name}</h2>
+                <p>📍 {facility.address}</p>
+                <p>🏙 {facility.city}</p>
+                <p>🕒 {facility.opening_hours}</p>
+              </div>
+
+              <div className={styles.grid}>
+                {facility.courts.map((court) => (
+                  <div key={court.id} className={styles.card}>
+                    <span className={styles.badge}>{court.sport_type}</span>
+
+                    <h3>{court.name}</h3>
+
+                    <p>{court.indoor_outdoor}</p>
+                    <p>Capacity: {court.capacity} players</p>
+                    <p className={styles.price}>{court.hourly_price} €/hour</p>
+
+                    <div className={styles.reviewSummary}>
+                      {court.review_count > 0 ? (
+                        <>
+                          <span>⭐ {court.average_rating}/5</span>
+                          <span>{court.review_count} reviews</span>
+                          <button
+                            type="button"
+                            className={styles.secondaryButton}
+                            onClick={() => handleOpenReviews(court)}
+                          >
+                            View Reviews
+                          </button>
+                        </>
+                      ) : (
+                        <span>No reviews yet</span>
+                      )}
+                    </div>
+
+                    <p>{court.description}</p>
+
+                    <button
+                      className={styles.button}
+                      onClick={() => setSelectedCourt(court)}
+                    >
+                      Reserve Court
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {selectedCourt && (
         <ReservationModal
@@ -164,6 +207,7 @@ function CourtsPage() {
           handleCloseModal={handleCloseModal}
         />
       )}
+
       {selectedReviewsCourt && (
         <ReviewModal
           selectedReviewsCourt={selectedReviewsCourt}
