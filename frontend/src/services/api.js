@@ -49,11 +49,11 @@ export const getAdminReservations = async () => {
   return response.json();
 };
 
-export const updateReservationStatus = async (id, status) => {
+export const updateReservationStatus = async (id, statusData) => {
   const response = await fetch(`${API_BASE_URL}/reservations/${id}/status`, {
     method: "PATCH",
     headers: getAuthHeaders(),
-    body: JSON.stringify({ status }),
+    body: JSON.stringify(statusData),
   });
 
   return response.json();
@@ -185,6 +185,35 @@ export const updateProfile = async (profileData) => {
 
 export const getUserProfileById = async (userId) => {
   const response = await fetch(`${API_BASE_URL}/profile/${userId}`, {
+    headers: getAuthHeaders(),
+  });
+
+  return response.json();
+};
+
+export const getNotifications = async () => {
+  const response = await fetch(`${API_BASE_URL}/notifications`, {
+    headers: getAuthHeaders(),
+  });
+
+  return response.json();
+};
+
+export const markNotificationAsRead = async (notificationId) => {
+  const response = await fetch(
+    `${API_BASE_URL}/notifications/${notificationId}/read`,
+    {
+      method: "PATCH",
+      headers: getAuthHeaders(),
+    },
+  );
+
+  return response.json();
+};
+
+export const markAllNotificationsAsRead = async () => {
+  const response = await fetch(`${API_BASE_URL}/notifications/read-all`, {
+    method: "PATCH",
     headers: getAuthHeaders(),
   });
 

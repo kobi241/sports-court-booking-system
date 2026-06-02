@@ -11,6 +11,8 @@ import AdminReservationsPage from "./pages/AdminReservationsPage";
 import AdminCourtsPage from "./pages/AdminCourtsPage";
 import MyReviewsPage from "./pages/MyReviewsPage";
 import ProfilePage from "./pages/ProfilePage";
+import MyNotificationsPage from "./pages/MyNotificationsPage";
+import AdminNotificationsPage from "./pages/AdminNotificationsPage";
 
 function App() {
   return (
@@ -53,6 +55,14 @@ function App() {
             }
           />
           <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute>
+                <MyNotificationsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/admin/reservations"
             element={
               <ProtectedRoute>
@@ -65,6 +75,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <AdminCourtsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/notifications"
+            element={
+              <ProtectedRoute>
+                <AdminNotificationsPage />
               </ProtectedRoute>
             }
           />

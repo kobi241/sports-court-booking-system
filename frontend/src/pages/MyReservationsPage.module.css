@@ -186,3 +186,16 @@
   background: #2563eb;
   color: white;
 }
+
+.rejectionBox {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 20px;
+  color: #991b1b;
+}
+
+.rejectionBox p {
+  margin: 0;
+}

@@ -14,6 +14,7 @@ router.get("/", authMiddleware, (req, res) => {
     DATE_FORMAT(reservation.reservation_date, '%Y-%m-%d') AS reservation_date,
     reservation.reservation_time,
     reservation.status,
+    reservation.rejection_reason,
     court.name AS court_name,
     facility.name AS facility_name,
     facility.address AS facility_address,
@@ -69,7 +70,7 @@ router.get("/admin", authMiddleware, adminMiddleware, (req, res) => {
 // UPDATE reservation status by admin
 router.patch("/:id/status", authMiddleware, adminMiddleware, (req, res) => {
   const reservationId = req.params.id;
-  const { status } = req.body;
+  const { status, rejection_reason } = req.body;
 
   if (status !== "approved" && status !== "rejected") {
     return res.status(400).json({
@@ -77,19 +78,83 @@ router.patch("/:id/status", authMiddleware, adminMiddleware, (req, res) => {
     });
   }
 
-  const query = "UPDATE reservation SET status = ? WHERE id = ?";
+  if (status === "rejected" && !rejection_reason) {
+    return res.status(400).json({
+      message: "Rejection reason is required when rejecting a reservation.",
+    });
+  }
 
-  db.query(query, [status, reservationId], (err, result) => {
+  const getReservationQuery = `
+    SELECT
+      reservation.user_id,
+      court.name AS court_name
+    FROM reservation
+    JOIN court ON reservation.court_id = court.id
+    WHERE reservation.id = ?
+  `;
+
+  db.query(getReservationQuery, [reservationId], (err, reservations) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: "Database error" });
     }
 
-    if (result.affectedRows === 0) {
+    if (reservations.length === 0) {
       return res.status(404).json({ message: "Reservation not found" });
     }
 
-    res.json({ message: `Reservation ${status}` });
+    const reservation = reservations[0];
+
+    const updateQuery = `
+      UPDATE reservation
+      SET status = ?, rejection_reason = ?
+      WHERE id = ?
+    `;
+
+    const reasonToSave = status === "rejected" ? rejection_reason : null;
+
+    db.query(
+      updateQuery,
+      [status, reasonToSave, reservationId],
+      (err, result) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ error: "Database error" });
+        }
+
+        const notificationTitle =
+          status === "approved"
+            ? "Reservation Approved"
+            : "Reservation Rejected";
+
+        const notificationMessage =
+          status === "approved"
+            ? `Congratulations! Your reservation for ${reservation.court_name} has been approved. Enjoy your time at the court.`
+            : `We are sorry, but your reservation for ${reservation.court_name} could not be approved. Reason: ${rejection_reason}`;
+
+        const insertNotificationQuery = `
+          INSERT INTO notification (title, message, user_id)
+          VALUES (?, ?, ?)
+        `;
+
+        db.query(
+          insertNotificationQuery,
+          [notificationTitle, notificationMessage, reservation.user_id],
+          (err) => {
+            if (err) {
+              console.error(err);
+              return res.status(500).json({
+                error: "Database error",
+              });
+            }
+
+            res.json({
+              message: `Reservation ${status}`,
+            });
+          },
+        );
+      },
+    );
   });
 });
 
@@ -135,7 +200,12 @@ router.post("/", authMiddleware, (req, res) => {
       }
 
       const insertReservationQuery = `
-        INSERT INTO reservation (reservation_date, reservation_time, user_id, court_id)
+        INSERT INTO reservation (
+          reservation_date,
+          reservation_time,
+          user_id,
+          court_id
+        )
         VALUES (?, ?, ?, ?)
       `;
 
@@ -148,7 +218,58 @@ router.post("/", authMiddleware, (req, res) => {
             return res.status(500).json({ error: "Database error" });
           }
 
-          res.json({ message: "Reservation created" });
+          const getCourtQuery = `
+            SELECT name
+            FROM court
+            WHERE id = ?
+          `;
+
+          db.query(getCourtQuery, [court_id], (err, courtResults) => {
+            if (err) {
+              console.error(err);
+              return res.status(500).json({ error: "Database error" });
+            }
+
+            const courtName =
+              courtResults.length > 0 ? courtResults[0].name : "a court";
+
+            const getAdminsQuery = `
+              SELECT id
+              FROM users
+              WHERE role = 'admin'
+            `;
+
+            db.query(getAdminsQuery, (err, admins) => {
+              if (err) {
+                console.error(err);
+                return res.status(500).json({ error: "Database error" });
+              }
+
+              if (admins.length === 0) {
+                return res.json({ message: "Reservation created" });
+              }
+
+              const notificationValues = admins.map((admin) => [
+                "New Reservation Request",
+                `A new reservation request has been submitted for ${courtName} on ${reservation_date} at ${reservation_time}.`,
+                admin.id,
+              ]);
+
+              const insertNotificationQuery = `
+                INSERT INTO notification (title, message, user_id)
+                VALUES ?
+              `;
+
+              db.query(insertNotificationQuery, [notificationValues], (err) => {
+                if (err) {
+                  console.error(err);
+                  return res.status(500).json({ error: "Database error" });
+                }
+
+                res.json({ message: "Reservation created" });
+              });
+            });
+          });
         },
       );
     },
@@ -160,20 +281,81 @@ router.delete("/:id", authMiddleware, (req, res) => {
   const reservationId = req.params.id;
   const userId = req.user.id;
 
-  const query = "DELETE FROM reservation WHERE id = ? AND user_id = ?";
+  const getReservationQuery = `
+    SELECT
+      DATE_FORMAT(reservation.reservation_date, '%Y-%m-%d') AS reservation_date,
+      reservation.reservation_time,
+      court.name AS court_name,
+      users.first_name AS user_name
+    FROM reservation
+    JOIN court ON reservation.court_id = court.id
+    JOIN users ON reservation.user_id = users.id
+    WHERE reservation.id = ? AND reservation.user_id = ?
+  `;
 
-  db.query(query, [reservationId, userId], (err, result) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Database error" });
-    }
+  db.query(
+    getReservationQuery,
+    [reservationId, userId],
+    (err, reservations) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Database error" });
+      }
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "Reservation not found" });
-    }
+      if (reservations.length === 0) {
+        return res.status(404).json({ message: "Reservation not found" });
+      }
 
-    res.json({ message: "Reservation deleted" });
-  });
+      const reservation = reservations[0];
+
+      const deleteQuery =
+        "DELETE FROM reservation WHERE id = ? AND user_id = ?";
+
+      db.query(deleteQuery, [reservationId, userId], (err, result) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ error: "Database error" });
+        }
+
+        const getAdminsQuery = `
+          SELECT id
+          FROM users
+          WHERE role = 'admin'
+        `;
+
+        db.query(getAdminsQuery, (err, admins) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Database error" });
+          }
+
+          if (admins.length === 0) {
+            return res.json({ message: "Reservation deleted" });
+          }
+
+          const notificationValues = admins.map((admin) => [
+            "Reservation Cancelled",
+            `${reservation.user_name} cancelled a reservation for ${reservation.court_name} on ${reservation.reservation_date} at ${reservation.reservation_time}.`,
+            admin.id,
+          ]);
+
+          const insertNotificationQuery = `
+            INSERT INTO notification (title, message, user_id)
+            VALUES ?
+          `;
+
+          db.query(insertNotificationQuery, [notificationValues], (err) => {
+            if (err) {
+              console.error(err);
+              return res.status(500).json({ error: "Database error" });
+            }
+
+            res.json({ message: "Reservation deleted" });
+          });
+        });
+      });
+    },
+  );
 });
 
 module.exports = router;

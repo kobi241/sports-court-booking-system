@@ -38,7 +38,22 @@ function AdminReservationsPage() {
   };
 
   const handleUpdateStatus = async (id, status) => {
-    await updateReservationStatus(id, status);
+    let rejectionReason = "";
+
+    if (status === "rejected") {
+      rejectionReason = window.prompt("Please enter rejection reason:");
+
+      if (!rejectionReason) {
+        alert("Rejection reason is required.");
+        return;
+      }
+    }
+
+    await updateReservationStatus(id, {
+      status,
+      rejection_reason: rejectionReason,
+    });
+
     await loadReservations();
   };
 

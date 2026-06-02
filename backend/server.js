@@ -8,6 +8,7 @@ const authRoutes = require("./routes/auth");
 const facilitiesRoutes = require("./routes/facilities");
 const reviewsRoutes = require("./routes/reviews");
 const profileRoutes = require("./routes/profile");
+const notificationsRoutes = require("./routes/notifications");
 
 const app = express();
 
@@ -30,3 +31,4 @@ app.use("/auth", authRoutes);
 app.use("/facilities", facilitiesRoutes);
 app.use("/reviews", reviewsRoutes);
 app.use("/profile", profileRoutes);
+app.use("/notifications", notificationsRoutes);

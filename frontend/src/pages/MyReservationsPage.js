@@ -146,6 +146,13 @@ function MyReservationsPage() {
                     </strong>
                   </div>
                 </div>
+                {reservation.status === "rejected" &&
+                  reservation.rejection_reason && (
+                    <div className={styles.rejectionBox}>
+                      <p className={styles.label}>Rejection Reason</p>
+                      <p>{reservation.rejection_reason}</p>
+                    </div>
+                  )}
 
                 {reservation.status === "pending" && (
                   <div className={styles.actions}>
