@@ -45,3 +45,20 @@
 .button:hover {
   background-color: #000;
 }
+
+.switchText {
+  margin-top: 18px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 16px;
+}
+
+.switchText a {
+  color: #2563eb;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.switchText a:hover {
+  text-decoration: underline;
+}
