@@ -90,7 +90,7 @@ function ProfilePage() {
               {profile.first_name} {profile.last_name}
             </h2>
             <p>{profile.email}</p>
-            <span className={styles.role}>{profile.role}</span>
+            <span className={styles.role}> 👤 {profile.role}</span>
           </div>
         </div>
 
@@ -138,13 +138,13 @@ function ProfilePage() {
           <div className={styles.info}>
             <div className={styles.infoGrid}>
               <div className={styles.infoBox}>
-                <p className={styles.label}>Phone</p>
+                <p className={styles.label}>📞 Phone</p>
 
-                <strong>{profile.phone_number || "Not added yet"}</strong>
+                <p>{profile.phone_number || "Not added yet"}</p>
               </div>
 
               <div className={styles.infoBox}>
-                <p className={styles.label}>Bio</p>
+                <p className={styles.label}>📝 Bio</p>
 
                 <p>{profile.bio || "Not added yet"}</p>
               </div>

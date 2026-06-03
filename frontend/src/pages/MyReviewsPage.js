@@ -145,7 +145,7 @@ function MyReviewsPage() {
                       className={styles.reviewForm}
                       onSubmit={handleUpdateReview}
                     >
-                      <p className={styles.label}>Edit Review</p>
+                      <p className={styles.label}>✏️ Edit Review</p>
 
                       <select
                         value={reviewForm.rating}
@@ -197,7 +197,7 @@ function MyReviewsPage() {
                     </form>
                   ) : (
                     <div className={styles.reviewBox}>
-                      <p className={styles.label}>Your Review</p>
+                      <p className={styles.label}>⭐ Your Review</p>
 
                       <p className={styles.rating}>⭐ {court.rating}/5</p>
 
@@ -227,7 +227,7 @@ function MyReviewsPage() {
                     className={styles.reviewForm}
                     onSubmit={(e) => handleCreateReview(e, court.court_id)}
                   >
-                    <p className={styles.label}>Add Review</p>
+                    <p className={styles.label}>⭐ Add Review</p>
 
                     <select
                       value={reviewForm.rating}

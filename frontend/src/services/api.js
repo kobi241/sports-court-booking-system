@@ -9,10 +9,85 @@ const getAuthHeaders = () => {
   };
 };
 
+// =======================
+// Courts
+// =======================
+
 export const getCourts = async () => {
   const response = await fetch(`${API_BASE_URL}/courts`);
   return response.json();
 };
+
+export const createCourt = async (courtData) => {
+  const response = await fetch(`${API_BASE_URL}/courts`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(courtData),
+  });
+
+  return response.json();
+};
+
+export const updateCourt = async (id, courtData) => {
+  const response = await fetch(`${API_BASE_URL}/courts/${id}`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(courtData),
+  });
+
+  return response.json();
+};
+
+export const deleteCourt = async (id) => {
+  const response = await fetch(`${API_BASE_URL}/courts/${id}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+
+  return response.json();
+};
+
+// =======================
+// Facilities
+// =======================
+
+export const getFacilities = async () => {
+  const response = await fetch(`${API_BASE_URL}/facilities`);
+  return response.json();
+};
+
+export const createFacility = async (facilityData) => {
+  const response = await fetch(`${API_BASE_URL}/facilities`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(facilityData),
+  });
+
+  return response.json();
+};
+
+export const updateFacility = async (id, facilityData) => {
+  const response = await fetch(`${API_BASE_URL}/facilities/${id}`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(facilityData),
+  });
+
+  return response.json();
+};
+
+export const deleteFacility = async (id) => {
+  const response = await fetch(`${API_BASE_URL}/facilities/${id}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+
+  return response.json();
+};
+
+// =======================
+// Reservations
+// =======================
 
 export const getReservations = async () => {
   const response = await fetch(`${API_BASE_URL}/reservations`, {
@@ -59,68 +134,9 @@ export const updateReservationStatus = async (id, statusData) => {
   return response.json();
 };
 
-export const getFacilities = async () => {
-  const response = await fetch(`${API_BASE_URL}/facilities`);
-  return response.json();
-};
-
-export const createFacility = async (facilityData) => {
-  const response = await fetch(`${API_BASE_URL}/facilities`, {
-    method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(facilityData),
-  });
-
-  return response.json();
-};
-
-export const updateFacility = async (id, facilityData) => {
-  const response = await fetch(`${API_BASE_URL}/facilities/${id}`, {
-    method: "PUT",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(facilityData),
-  });
-
-  return response.json();
-};
-
-export const deleteFacility = async (id) => {
-  const response = await fetch(`${API_BASE_URL}/facilities/${id}`, {
-    method: "DELETE",
-    headers: getAuthHeaders(),
-  });
-
-  return response.json();
-};
-
-export const createCourt = async (courtData) => {
-  const response = await fetch(`${API_BASE_URL}/courts`, {
-    method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(courtData),
-  });
-
-  return response.json();
-};
-
-export const updateCourt = async (id, courtData) => {
-  const response = await fetch(`${API_BASE_URL}/courts/${id}`, {
-    method: "PUT",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(courtData),
-  });
-
-  return response.json();
-};
-
-export const deleteCourt = async (id) => {
-  const response = await fetch(`${API_BASE_URL}/courts/${id}`, {
-    method: "DELETE",
-    headers: getAuthHeaders(),
-  });
-
-  return response.json();
-};
+// =======================
+// Reviews
+// =======================
 
 export const getEligibleReviewCourts = async () => {
   const response = await fetch(`${API_BASE_URL}/reviews/my-eligible-courts`, {
@@ -165,6 +181,10 @@ export const deleteReview = async (reviewId) => {
   return response.json();
 };
 
+// =======================
+// Profile
+// =======================
+
 export const getProfile = async () => {
   const response = await fetch(`${API_BASE_URL}/profile`, {
     headers: getAuthHeaders(),
@@ -190,6 +210,10 @@ export const getUserProfileById = async (userId) => {
 
   return response.json();
 };
+
+// =======================
+// Notifications
+// =======================
 
 export const getNotifications = async () => {
   const response = await fetch(`${API_BASE_URL}/notifications`, {

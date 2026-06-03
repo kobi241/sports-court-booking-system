@@ -70,10 +70,30 @@ function NotificationsList({ title }) {
                 !notification.is_read ? styles.unread : ""
               }`}
             >
-              <div>
-                <h3>{notification.title}</h3>
+              <div className={styles.notificationContent}>
+                <div className={styles.notificationTop}>
+                  <span className={styles.icon}>
+                    {!notification.is_read ? "🔵" : "✅"}
+                  </span>
+
+                  <h3>{notification.title}</h3>
+                </div>
+
                 <p>{notification.message}</p>
-                <small>{notification.created_at}</small>
+
+                <div className={styles.meta}>
+                  <small>{notification.created_at}</small>
+
+                  <span
+                    className={`${styles.statusText} ${
+                      !notification.is_read
+                        ? styles.unreadText
+                        : styles.readText
+                    }`}
+                  >
+                    {!notification.is_read ? "Unread" : "Read"}
+                  </span>
+                </div>
               </div>
 
               {!notification.is_read && (

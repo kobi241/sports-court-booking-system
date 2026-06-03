@@ -17,27 +17,6 @@
   gap: 20px;
 }
 
-.card {
-  background: white;
-  border-radius: 22px;
-  padding: 24px;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
-}
-
-.cardTop {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.cardTop h2 {
-  margin: 0;
-  color: #111827;
-  font-size: 28px;
-}
-
 .label {
   margin: 0 0 4px;
   font-size: 13px;
@@ -47,66 +26,6 @@
   letter-spacing: 0.04em;
 }
 
-.facilityBox {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 20px;
-}
-
-.facilityBox h3 {
-  margin: 0 0 12px;
-  color: #2563eb;
-  font-size: 22px;
-}
-
-.facilityBox p:last-child {
-  color: #4b5563;
-}
-
-.infoGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
-  margin-bottom: 20px;
-}
-
-.infoBox {
-  background: #f9fafb;
-  border-radius: 14px;
-  padding: 16px;
-  border: 1px solid #e5e7eb;
-}
-
-.infoBox strong {
-  color: #111827;
-  font-size: 17px;
-}
-
-.status {
-  padding: 8px 16px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 700;
-  text-transform: capitalize;
-}
-
-.pending {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.approved {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.rejected {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -114,17 +33,12 @@
 
 .button {
   border: none;
-  background: #ef4444;
   color: white;
   padding: 12px 18px;
   border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
   transition: background 0.2s ease;
-}
-
-.button:hover {
-  background: #dc2626;
 }
 
 .emptyMessage {
@@ -134,24 +48,6 @@
   text-align: center;
   color: #6b7280;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
-}
-
-@media (max-width: 700px) {
-  .cardTop {
-    flex-direction: column;
-  }
-
-  .infoGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .actions {
-    justify-content: stretch;
-  }
-
-  .button {
-    width: 100%;
-  }
 }
 
 .filters {
@@ -216,4 +112,14 @@
 
 .profileButton:hover {
   background: #dbeafe;
+}
+
+@media (max-width: 700px) {
+  .actions {
+    justify-content: stretch;
+  }
+
+  .button {
+    width: 100%;
+  }
 }

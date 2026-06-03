@@ -2,14 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getReservations, deleteReservation } from "../services/api";
 
+import ReservationCard from "../components/ReservationCard";
 import styles from "./MyReservationsPage.module.css";
-
-const formatTimeSlot = (time) => {
-  const startHour = Number(time.slice(0, 2));
-  const endHour = String(startHour + 1).padStart(2, "0");
-
-  return `${time.slice(0, 5)} - ${endHour}:00`;
-};
 
 function MyReservationsPage() {
   const [reservations, setReservations] = useState([]);
@@ -63,41 +57,17 @@ function MyReservationsPage() {
       <h1 className={styles.title}>My Reservations</h1>
 
       <div className={styles.filters}>
-        <button
-          className={`${styles.filterButton} ${
-            statusFilter === "all" ? styles.activeFilter : ""
-          }`}
-          onClick={() => setStatusFilter("all")}
-        >
-          All
-        </button>
-
-        <button
-          className={`${styles.filterButton} ${
-            statusFilter === "pending" ? styles.activeFilter : ""
-          }`}
-          onClick={() => setStatusFilter("pending")}
-        >
-          Pending
-        </button>
-
-        <button
-          className={`${styles.filterButton} ${
-            statusFilter === "approved" ? styles.activeFilter : ""
-          }`}
-          onClick={() => setStatusFilter("approved")}
-        >
-          Approved
-        </button>
-
-        <button
-          className={`${styles.filterButton} ${
-            statusFilter === "rejected" ? styles.activeFilter : ""
-          }`}
-          onClick={() => setStatusFilter("rejected")}
-        >
-          Rejected
-        </button>
+        {["all", "pending", "approved", "rejected"].map((status) => (
+          <button
+            key={status}
+            className={`${styles.filterButton} ${
+              statusFilter === status ? styles.activeFilter : ""
+            }`}
+            onClick={() => setStatusFilter(status)}
+          >
+            {status.charAt(0).toUpperCase() + status.slice(1)}
+          </button>
+        ))}
       </div>
 
       {filteredReservations.length === 0 ? (
@@ -106,67 +76,37 @@ function MyReservationsPage() {
         </p>
       ) : (
         <div className={styles.list}>
-          {filteredReservations.map((reservation) => {
-            const statusClass = styles[reservation.status];
-
-            return (
-              <div key={reservation.id} className={styles.card}>
-                <div className={styles.cardTop}>
-                  <div>
-                    <p className={styles.label}>Court</p>
-                    <h2>{reservation.court_name}</h2>
+          {filteredReservations.map((reservation) => (
+            <ReservationCard
+              key={reservation.id}
+              reservation={reservation}
+              topContent={
+                <>
+                  <p className={styles.label}>Court</p>
+                  <h2>{reservation.court_name}</h2>
+                </>
+              }
+              extraContent={
+                reservation.status === "rejected" &&
+                reservation.rejection_reason && (
+                  <div className={styles.rejectionBox}>
+                    <p className={styles.label}>Rejection Reason</p>
+                    <p>{reservation.rejection_reason}</p>
                   </div>
-
-                  <span className={`${styles.status} ${statusClass}`}>
-                    {reservation.status}
-                  </span>
-                </div>
-
-                <div className={styles.facilityBox}>
-                  <p className={styles.label}>Facility</p>
-                  <h3>{reservation.facility_name}</h3>
-
-                  <p className={styles.label}>Address</p>
-                  <p>
-                    📍 {reservation.facility_address},{" "}
-                    {reservation.facility_city}
-                  </p>
-                </div>
-
-                <div className={styles.infoGrid}>
-                  <div className={styles.infoBox}>
-                    <p className={styles.label}>Date</p>
-                    <strong>{reservation.reservation_date}</strong>
-                  </div>
-
-                  <div className={styles.infoBox}>
-                    <p className={styles.label}>Time Slot</p>
-                    <strong>
-                      {formatTimeSlot(reservation.reservation_time)}
-                    </strong>
-                  </div>
-                </div>
-                {reservation.status === "rejected" &&
-                  reservation.rejection_reason && (
-                    <div className={styles.rejectionBox}>
-                      <p className={styles.label}>Rejection Reason</p>
-                      <p>{reservation.rejection_reason}</p>
-                    </div>
-                  )}
-
-                {reservation.status === "pending" && (
-                  <div className={styles.actions}>
-                    <button
-                      className={styles.button}
-                      onClick={() => handleDeleteReservation(reservation.id)}
-                    >
-                      Cancel Reservation
-                    </button>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                )
+              }
+              actions={
+                reservation.status === "pending" && (
+                  <button
+                    className={styles.button}
+                    onClick={() => handleDeleteReservation(reservation.id)}
+                  >
+                    Cancel Reservation
+                  </button>
+                )
+              }
+            />
+          ))}
         </div>
       )}
     </div>

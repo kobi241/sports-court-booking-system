@@ -66,6 +66,14 @@
   background: #b91c1c;
 }
 
+.addCourtButton {
+  background: #22c55e;
+}
+
+.addCourtButton:hover {
+  background: #16a34a;
+}
+
 .secondaryButton {
   background: #6b7280;
 }
@@ -102,6 +110,7 @@
 }
 
 .courtCard {
+  text-align: center;
   border: 1px solid #e5e7eb;
   border-radius: 14px;
   padding: 16px;
@@ -111,6 +120,10 @@
 .courtCard h4 {
   margin: 0 0 8px;
   color: #111827;
+}
+
+.courtCard .actions {
+  justify-content: center;
 }
 
 .badge {

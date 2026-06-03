@@ -378,7 +378,7 @@ function AdminCourtsPage() {
 
                   <button
                     type="button"
-                    className={styles.button}
+                    className={`${styles.button} ${styles.addCourtButton}`}
                     onClick={() => handleOpenCourtForm(facility.id)}
                   >
                     Add Court

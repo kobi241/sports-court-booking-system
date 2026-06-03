@@ -5,15 +5,9 @@ import {
   getUserProfileById,
 } from "../services/api";
 
+import ReservationCard from "../components/ReservationCard";
 import UserProfileModal from "../components/UserProfileModal";
 import styles from "./AdminReservationsPage.module.css";
-
-const formatTimeSlot = (time) => {
-  const startHour = Number(time.slice(0, 2));
-  const endHour = String(startHour + 1).padStart(2, "0");
-
-  return `${time.slice(0, 5)} - ${endHour}:00`;
-};
 
 function AdminReservationsPage() {
   const [reservations, setReservations] = useState([]);
@@ -95,62 +89,27 @@ function AdminReservationsPage() {
         <p className={styles.emptyMessage}>No reservations found.</p>
       ) : (
         <div className={styles.list}>
-          {filteredReservations.map((reservation) => {
-            const statusClass = styles[reservation.status];
+          {filteredReservations.map((reservation) => (
+            <ReservationCard
+              key={reservation.id}
+              reservation={reservation}
+              topContent={
+                <>
+                  <p className={styles.label}>User</p>
+                  <h2>{reservation.user_name}</h2>
 
-            return (
-              <div key={reservation.id} className={styles.card}>
-                <div className={styles.cardTop}>
-                  <div>
-                    <p className={styles.label}>User</p>
-                    <h2>{reservation.user_name}</h2>
-
-                    <button
-                      type="button"
-                      className={styles.profileButton}
-                      onClick={() => handleOpenUserProfile(reservation.user_id)}
-                    >
-                      View Profile
-                    </button>
-                  </div>
-
-                  <span className={`${styles.status} ${statusClass}`}>
-                    {reservation.status}
-                  </span>
-                </div>
-
-                <div className={styles.facilityBox}>
-                  <p className={styles.label}>Facility</p>
-                  <h3>{reservation.facility_name}</h3>
-
-                  <p className={styles.label}>Address</p>
-                  <p>
-                    📍 {reservation.facility_address},{" "}
-                    {reservation.facility_city}
-                  </p>
-                </div>
-
-                <div className={styles.infoGrid}>
-                  <div className={styles.infoBox}>
-                    <p className={styles.label}>Court</p>
-                    <strong>{reservation.court_name}</strong>
-                  </div>
-
-                  <div className={styles.infoBox}>
-                    <p className={styles.label}>Date</p>
-                    <strong>{reservation.reservation_date}</strong>
-                  </div>
-
-                  <div className={styles.infoBox}>
-                    <p className={styles.label}>Time Slot</p>
-                    <strong>
-                      {formatTimeSlot(reservation.reservation_time)}
-                    </strong>
-                  </div>
-                </div>
-
-                {reservation.status === "pending" && (
-                  <div className={styles.actions}>
+                  <button
+                    type="button"
+                    className={styles.profileButton}
+                    onClick={() => handleOpenUserProfile(reservation.user_id)}
+                  >
+                    View Profile
+                  </button>
+                </>
+              }
+              actions={
+                reservation.status === "pending" && (
+                  <>
                     <button
                       className={`${styles.button} ${styles.approveButton}`}
                       onClick={() =>
@@ -168,11 +127,11 @@ function AdminReservationsPage() {
                     >
                       Reject
                     </button>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                  </>
+                )
+              }
+            />
+          ))}
         </div>
       )}
 

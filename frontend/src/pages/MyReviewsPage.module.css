@@ -206,6 +206,12 @@ textarea.input {
   display: flex;
   flex-direction: column;
   gap: 14px;
+
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 18px;
 }
 
 .reviewButton {
@@ -218,8 +224,9 @@ textarea.input {
 
 .reviewBox {
   background: #f9fafb;
-  border-radius: 14px;
-  padding: 18px;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 20px;
   margin-top: 18px;
 }
 
