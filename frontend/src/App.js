@@ -24,7 +24,7 @@ function App() {
           <Route
             path="/"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["user"]}>
                 <CourtsPage />
               </ProtectedRoute>
             }
@@ -33,7 +33,7 @@ function App() {
           <Route
             path="/reservations"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["user"]}>
                 <MyReservationsPage />
               </ProtectedRoute>
             }
@@ -41,7 +41,7 @@ function App() {
           <Route
             path="/my-reviews"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["user"]}>
                 <MyReviewsPage />
               </ProtectedRoute>
             }
@@ -49,7 +49,7 @@ function App() {
           <Route
             path="/profile"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["user"]}>
                 <ProfilePage />
               </ProtectedRoute>
             }
@@ -57,7 +57,7 @@ function App() {
           <Route
             path="/notifications"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["user"]}>
                 <MyNotificationsPage />
               </ProtectedRoute>
             }
@@ -65,7 +65,7 @@ function App() {
           <Route
             path="/admin/reservations"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["admin"]}>
                 <AdminReservationsPage />
               </ProtectedRoute>
             }
@@ -73,7 +73,7 @@ function App() {
           <Route
             path="/admin/courts"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["admin"]}>
                 <AdminCourtsPage />
               </ProtectedRoute>
             }
@@ -81,7 +81,7 @@ function App() {
           <Route
             path="/admin/notifications"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["admin"]}>
                 <AdminNotificationsPage />
               </ProtectedRoute>
             }
