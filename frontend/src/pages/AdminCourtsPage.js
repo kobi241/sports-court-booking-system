@@ -274,7 +274,7 @@ function AdminCourtsPage() {
           <input
             type="text"
             name="name"
-            placeholder="Facility Name"
+            placeholder="Facility Name *"
             value={newFacility.name}
             onChange={handleFacilityChange}
             className={styles.input}
@@ -283,7 +283,7 @@ function AdminCourtsPage() {
           <input
             type="text"
             name="address"
-            placeholder="Address"
+            placeholder="Address *"
             value={newFacility.address}
             onChange={handleFacilityChange}
             className={styles.input}
@@ -292,7 +292,7 @@ function AdminCourtsPage() {
           <input
             type="text"
             name="city"
-            placeholder="City"
+            placeholder="City *"
             value={newFacility.city}
             onChange={handleFacilityChange}
             className={styles.input}
@@ -319,7 +319,7 @@ function AdminCourtsPage() {
           <input
             type="text"
             name="opening_hours"
-            placeholder="Opening Hours, e.g. 07:00 - 23:00"
+            placeholder="Opening Hours, e.g. 07:00 - 23:00 *"
             value={newFacility.opening_hours}
             onChange={handleFacilityChange}
             className={styles.input}
