@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import styles from "./LoginPage.module.css";
 
@@ -10,12 +10,12 @@ function LoginPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
 
-    if (user) {
+    if (token) {
       navigate("/");
     }
-  }, []);
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -38,6 +38,7 @@ function LoginPage() {
 
       // Store user data in localStorage
       localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.token);
 
       alert("Login successful!");
 
@@ -75,6 +76,9 @@ function LoginPage() {
             Login
           </button>
         </form>
+        <p className={styles.switchText}>
+          Don't have an account? Register <Link to="/register">here</Link>
+        </p>
       </div>
     </div>
   );

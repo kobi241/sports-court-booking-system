@@ -1,7 +1,31 @@
 import { createPortal } from "react-dom";
+import { useEffect } from "react";
 import styles from "./ReservationModal.module.css";
 
-import { useEffect } from "react";
+const generateTimeSlots = (openingHours) => {
+  if (!openingHours) {
+    return [];
+  }
+
+  const [start, end] = openingHours.split(" - ");
+
+  const startHour = Number(start.slice(0, 2));
+  const endHour = Number(end.slice(0, 2));
+
+  const slots = [];
+
+  for (let hour = startHour; hour < endHour; hour++) {
+    const slotStart = `${String(hour).padStart(2, "0")}:00:00`;
+    const slotEnd = `${String(hour + 1).padStart(2, "0")}:00`;
+
+    slots.push({
+      value: slotStart,
+      label: `${slotStart.slice(0, 5)} - ${slotEnd}`,
+    });
+  }
+
+  return slots;
+};
 
 function ReservationModal({
   selectedCourt,
@@ -10,6 +34,8 @@ function ReservationModal({
   handleSubmitReservation,
   handleCloseModal,
 }) {
+  const timeSlots = generateTimeSlots(selectedCourt.opening_hours);
+
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape") {
@@ -18,6 +44,7 @@ function ReservationModal({
     };
 
     window.addEventListener("keydown", handleEsc);
+
     return () => {
       window.removeEventListener("keydown", handleEsc);
     };
@@ -31,40 +58,34 @@ function ReservationModal({
         <form className={styles.form} onSubmit={handleSubmitReservation}>
           <input
             className={styles.input}
-            type="text"
-            placeholder="Your name"
-            value={reservationForm.user_name}
-            onChange={(e) =>
-              setReservationForm({
-                ...reservationForm,
-                user_name: e.target.value,
-              })
-            }
-          />
-
-          <input
-            className={styles.input}
             type="date"
-            value={reservationForm.date}
+            value={reservationForm.reservation_date}
             onChange={(e) =>
               setReservationForm({
                 ...reservationForm,
-                date: e.target.value,
+                reservation_date: e.target.value,
               })
             }
           />
 
-          <input
+          <select
             className={styles.input}
-            type="time"
-            value={reservationForm.start_time}
+            value={reservationForm.reservation_time}
             onChange={(e) =>
               setReservationForm({
                 ...reservationForm,
-                start_time: e.target.value,
+                reservation_time: e.target.value,
               })
             }
-          />
+          >
+            <option value="">Select time slot</option>
+
+            {timeSlots.map((slot) => (
+              <option key={slot.value} value={slot.value}>
+                {slot.label}
+              </option>
+            ))}
+          </select>
 
           <div className={styles.actions}>
             <button
@@ -79,9 +100,8 @@ function ReservationModal({
               className={styles.submitButton}
               type="submit"
               disabled={
-                !reservationForm.user_name ||
-                !reservationForm.date ||
-                !reservationForm.start_time
+                !reservationForm.reservation_date ||
+                !reservationForm.reservation_time
               }
             >
               Confirm Reservation

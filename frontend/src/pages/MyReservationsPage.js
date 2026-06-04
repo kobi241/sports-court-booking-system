@@ -1,52 +1,127 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getReservations, deleteReservation } from "../services/api";
 
+import ReservationCard from "../components/ReservationCard";
 import styles from "./MyReservationsPage.module.css";
 
 function MyReservationsPage() {
   const [reservations, setReservations] = useState([]);
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    let user = null;
+
+    try {
+      user = JSON.parse(localStorage.getItem("user"));
+    } catch {
+      user = null;
+    }
+
+    if (user?.role === "admin") {
+      navigate("/admin/reservations");
+    }
+  }, [navigate]);
 
   useEffect(() => {
     loadReservations();
   }, []);
 
   const loadReservations = async () => {
-    const data = await getReservations();
-    setReservations(data);
+    try {
+      const data = await getReservations();
+
+      const sortedReservations = [...data].sort((a, b) => {
+        const firstDateTime = `${a.reservation_date} ${a.reservation_time}`;
+        const secondDateTime = `${b.reservation_date} ${b.reservation_time}`;
+
+        return firstDateTime.localeCompare(secondDateTime);
+      });
+
+      setReservations(sortedReservations);
+    } catch (error) {
+      console.error("Failed to load reservations:", error);
+      alert("Failed to load reservations.");
+    }
   };
 
   const handleDeleteReservation = async (id) => {
     if (!window.confirm("Are you sure you want to cancel this reservation?")) {
       return;
     }
-    await deleteReservation(id);
-    await loadReservations();
+
+    try {
+      await deleteReservation(id);
+      await loadReservations();
+    } catch (error) {
+      console.error("Failed to cancel reservation:", error);
+      alert("Failed to cancel reservation.");
+    }
   };
+
+  const filteredReservations =
+    statusFilter === "all"
+      ? reservations
+      : reservations.filter(
+          (reservation) => reservation.status === statusFilter,
+        );
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>My Reservations</h1>
 
-      {reservations.length === 0 ? (
+      <div className={styles.filters}>
+        {["all", "pending", "approved", "rejected"].map((status) => (
+          <button
+            key={status}
+            className={`${styles.filterButton} ${
+              statusFilter === status ? styles.activeFilter : ""
+            }`}
+            onClick={() => setStatusFilter(status)}
+          >
+            {status.charAt(0).toUpperCase() + status.slice(1)}
+          </button>
+        ))}
+      </div>
+
+      {filteredReservations.length === 0 ? (
         <p className={styles.emptyMessage}>
           You do not have any reservations yet.
         </p>
       ) : (
         <div className={styles.list}>
-          {reservations.map((reservation) => (
-            <div key={reservation.id} className={styles.card}>
-              <p>Court: {reservation.court_name}</p>
-              <p>User: {reservation.user_name}</p>
-              <p>Date: {reservation.date}</p>
-              <p>Time: {reservation.start_time}</p>
-
-              <button
-                className={styles.button}
-                onClick={() => handleDeleteReservation(reservation.id)}
-              >
-                Cancel Reservation
-              </button>
-            </div>
+          {filteredReservations.map((reservation) => (
+            <ReservationCard
+              key={reservation.id}
+              reservation={reservation}
+              topContent={
+                <>
+                  <p className={styles.label}>Court</p>
+                  <h2>{reservation.court_name}</h2>
+                </>
+              }
+              extraContent={
+                reservation.status === "rejected" &&
+                reservation.rejection_reason && (
+                  <div className={styles.rejectionBox}>
+                    <p className={styles.label}>Rejection Reason</p>
+                    <p>{reservation.rejection_reason}</p>
+                  </div>
+                )
+              }
+              actions={
+                reservation.status === "pending" && (
+                  <button
+                    className={styles.button}
+                    onClick={() => handleDeleteReservation(reservation.id)}
+                  >
+                    Cancel Reservation
+                  </button>
+                )
+              }
+            />
           ))}
         </div>
       )}

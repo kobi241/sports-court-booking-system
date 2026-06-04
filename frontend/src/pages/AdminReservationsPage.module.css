@@ -33,17 +33,12 @@
 
 .button {
   border: none;
-  background: #ef4444;
   color: white;
   padding: 12px 18px;
   border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
   transition: background 0.2s ease;
-}
-
-.button:hover {
-  background: #dc2626;
 }
 
 .emptyMessage {
@@ -88,18 +83,35 @@
   color: white;
 }
 
-.rejectionBox {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 20px;
-  color: #991b1b;
-  text-align: center;
+.approveButton {
+  background: #22c55e;
 }
 
-.rejectionBox p {
-  margin: 0;
+.approveButton:hover {
+  background: #16a34a;
+}
+
+.rejectButton {
+  background: #ef4444;
+}
+
+.rejectButton:hover {
+  background: #dc2626;
+}
+
+.profileButton {
+  margin-top: 8px;
+  border: none;
+  background: #eff6ff;
+  color: #2563eb;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.profileButton:hover {
+  background: #dbeafe;
 }
 
 @media (max-width: 700px) {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import styles from "./RegisterPage.module.css";
 
@@ -20,7 +20,7 @@ function RegisterPage() {
     if (user) {
       navigate("/");
     }
-  }, []);
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({
@@ -111,6 +111,9 @@ function RegisterPage() {
             Register
           </button>
         </form>
+        <p className={styles.switchText}>
+          Already have an account? Login <Link to="/login">here</Link>
+        </p>
       </div>
     </div>
   );

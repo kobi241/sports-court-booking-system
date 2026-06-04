@@ -7,6 +7,12 @@ import MyReservationsPage from "./pages/MyReservationsPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminReservationsPage from "./pages/AdminReservationsPage";
+import AdminCourtsPage from "./pages/AdminCourtsPage";
+import MyReviewsPage from "./pages/MyReviewsPage";
+import ProfilePage from "./pages/ProfilePage";
+import MyNotificationsPage from "./pages/MyNotificationsPage";
+import AdminNotificationsPage from "./pages/AdminNotificationsPage";
 
 function App() {
   return (
@@ -18,7 +24,7 @@ function App() {
           <Route
             path="/"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["user"]}>
                 <CourtsPage />
               </ProtectedRoute>
             }
@@ -27,8 +33,56 @@ function App() {
           <Route
             path="/reservations"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["user"]}>
                 <MyReservationsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-reviews"
+            element={
+              <ProtectedRoute allowedRoles={["user"]}>
+                <MyReviewsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute allowedRoles={["user"]}>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute allowedRoles={["user"]}>
+                <MyNotificationsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/reservations"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminReservationsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/courts"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminCourtsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/notifications"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminNotificationsPage />
               </ProtectedRoute>
             }
           />
