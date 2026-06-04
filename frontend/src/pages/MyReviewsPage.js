@@ -23,7 +23,7 @@ function MyReviewsPage() {
   const loadReviewCourts = async () => {
     try {
       const data = await getEligibleReviewCourts();
-      setReviewCourts(data);
+      setReviewCourts(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Failed to load review courts:", error);
       alert("Failed to load review courts.");

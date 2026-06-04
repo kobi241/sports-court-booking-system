@@ -43,7 +43,7 @@ function CourtsPage() {
   const loadCourts = async () => {
     try {
       const data = await getCourts();
-      setCourts(data);
+      setCourts(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Failed to load courts:", error);
       alert("Failed to load courts.");
