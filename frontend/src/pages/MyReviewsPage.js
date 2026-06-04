@@ -21,32 +21,42 @@ function MyReviewsPage() {
   }, []);
 
   const loadReviewCourts = async () => {
-    const data = await getEligibleReviewCourts();
-    setReviewCourts(data);
+    try {
+      const data = await getEligibleReviewCourts();
+      setReviewCourts(data);
+    } catch (error) {
+      console.error("Failed to load review courts:", error);
+      alert("Failed to load review courts.");
+    }
   };
 
   const handleCreateReview = async (e, courtId) => {
     e.preventDefault();
 
-    const result = await createReview({
-      court_id: courtId,
-      rating: Number(reviewForm.rating),
-      comment: reviewForm.comment,
-    });
+    try {
+      const result = await createReview({
+        court_id: courtId,
+        rating: Number(reviewForm.rating),
+        comment: reviewForm.comment,
+      });
 
-    if (result.message !== "Review created successfully") {
-      alert(result.message || "Review could not be created");
-      return;
+      if (result.message !== "Review created successfully") {
+        alert(result.message || "Review could not be created");
+        return;
+      }
+
+      setReviewForm({
+        rating: "",
+        comment: "",
+      });
+
+      await loadReviewCourts();
+
+      alert("Review created successfully!");
+    } catch (error) {
+      console.error("Failed to create review:", error);
+      alert("Failed to create review.");
     }
-
-    setReviewForm({
-      rating: "",
-      comment: "",
-    });
-
-    await loadReviewCourts();
-
-    alert("Review created successfully!");
   };
 
   const handleEditReview = (court) => {
@@ -61,25 +71,30 @@ function MyReviewsPage() {
   const handleUpdateReview = async (e) => {
     e.preventDefault();
 
-    const result = await updateReview(editingReviewId, {
-      rating: Number(reviewForm.rating),
-      comment: reviewForm.comment,
-    });
+    try {
+      const result = await updateReview(editingReviewId, {
+        rating: Number(reviewForm.rating),
+        comment: reviewForm.comment,
+      });
 
-    if (result.message !== "Review updated successfully") {
-      alert(result.message || "Review could not be updated");
-      return;
+      if (result.message !== "Review updated successfully") {
+        alert(result.message || "Review could not be updated");
+        return;
+      }
+
+      setEditingReviewId(null);
+      setReviewForm({
+        rating: "",
+        comment: "",
+      });
+
+      await loadReviewCourts();
+
+      alert("Review updated successfully!");
+    } catch (error) {
+      console.error("Failed to update review:", error);
+      alert("Failed to update review.");
     }
-
-    setEditingReviewId(null);
-    setReviewForm({
-      rating: "",
-      comment: "",
-    });
-
-    await loadReviewCourts();
-
-    alert("Review updated successfully!");
   };
 
   const handleDeleteReview = async (reviewId) => {
@@ -87,16 +102,21 @@ function MyReviewsPage() {
       return;
     }
 
-    const result = await deleteReview(reviewId);
+    try {
+      const result = await deleteReview(reviewId);
 
-    if (result.message !== "Review deleted successfully") {
-      alert(result.message || "Review could not be deleted");
-      return;
+      if (result.message !== "Review deleted successfully") {
+        alert(result.message || "Review could not be deleted");
+        return;
+      }
+
+      await loadReviewCourts();
+
+      alert("Review deleted successfully!");
+    } catch (error) {
+      console.error("Failed to delete review:", error);
+      alert("Failed to delete review.");
     }
-
-    await loadReviewCourts();
-
-    alert("Review deleted successfully!");
   };
 
   const handleCancelEdit = () => {

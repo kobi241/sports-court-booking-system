@@ -19,14 +19,19 @@ function ProfilePage() {
   }, []);
 
   const loadProfile = async () => {
-    const data = await getProfile();
+    try {
+      const data = await getProfile();
 
-    setProfile(data);
-    setProfileForm({
-      phone_number: data.phone_number || "",
-      bio: data.bio || "",
-      profile_image: data.profile_image || "",
-    });
+      setProfile(data);
+      setProfileForm({
+        phone_number: data.phone_number || "",
+        bio: data.bio || "",
+        profile_image: data.profile_image || "",
+      });
+    } catch (error) {
+      console.error("Failed to load profile:", error);
+      alert("Failed to load profile.");
+    }
   };
 
   const handleChange = (e) => {
@@ -39,17 +44,22 @@ function ProfilePage() {
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
 
-    const result = await updateProfile(profileForm);
+    try {
+      const result = await updateProfile(profileForm);
 
-    if (result.message !== "Profile updated successfully") {
-      alert(result.message || "Profile could not be updated");
-      return;
+      if (result.message !== "Profile updated successfully") {
+        alert(result.message || "Profile could not be updated");
+        return;
+      }
+
+      await loadProfile();
+      setIsEditing(false);
+
+      alert("Profile updated successfully!");
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+      alert("Failed to update profile.");
     }
-
-    await loadProfile();
-    setIsEditing(false);
-
-    alert("Profile updated successfully!");
   };
 
   const handleCancelEdit = () => {

@@ -23,7 +23,13 @@ function CourtsPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    let user = null;
+
+    try {
+      user = JSON.parse(localStorage.getItem("user"));
+    } catch {
+      user = null;
+    }
 
     if (user?.role === "admin") {
       navigate("/admin/reservations");
@@ -35,8 +41,13 @@ function CourtsPage() {
   }, []);
 
   const loadCourts = async () => {
-    const data = await getCourts();
-    setCourts(data);
+    try {
+      const data = await getCourts();
+      setCourts(data);
+    } catch (error) {
+      console.error("Failed to load courts:", error);
+      alert("Failed to load courts.");
+    }
   };
 
   const handleSubmitReservation = async (e) => {
@@ -48,16 +59,21 @@ function CourtsPage() {
       court_id: selectedCourt.id,
     };
 
-    const result = await createReservation(newReservation);
+    try {
+      const result = await createReservation(newReservation);
 
-    if (result.message !== "Reservation created") {
-      alert(result.message || "Reservation could not be created");
-      return;
+      if (result.message !== "Reservation created") {
+        alert(result.message || "Reservation could not be created");
+        return;
+      }
+
+      handleCloseModal();
+
+      alert("Reservation created successfully!");
+    } catch (error) {
+      console.error("Failed to create reservation:", error);
+      alert("Failed to create reservation.");
     }
-
-    handleCloseModal();
-
-    alert("Reservation created successfully!");
   };
 
   const handleCloseModal = useCallback(() => {
@@ -71,8 +87,14 @@ function CourtsPage() {
   const handleOpenReviews = async (court) => {
     setSelectedReviewsCourt(court);
 
-    const data = await getCourtReviews(court.id);
-    setCourtReviews(data);
+    try {
+      const data = await getCourtReviews(court.id);
+      setCourtReviews(data);
+    } catch (error) {
+      console.error("Failed to load court reviews:", error);
+      alert("Failed to load court reviews.");
+      setCourtReviews({ reviews: [], averageRating: 0, reviewCount: 0 });
+    }
   };
 
   const handleCloseReviews = () => {

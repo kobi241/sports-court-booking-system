@@ -28,15 +28,22 @@ function Navbar() {
         return;
       }
 
-      const data = await getNotifications();
+      try {
+        const data = await getNotifications();
 
-      if (!Array.isArray(data)) {
+        if (!Array.isArray(data)) {
+          setUnreadCount(0);
+          return;
+        }
+
+        const count = data.filter(
+          (notification) => !notification.is_read,
+        ).length;
+        setUnreadCount(count);
+      } catch (error) {
+        console.error("Failed to load unread notifications:", error);
         setUnreadCount(0);
-        return;
       }
-
-      const count = data.filter((notification) => !notification.is_read).length;
-      setUnreadCount(count);
     };
 
     loadUnreadCount();

@@ -19,16 +19,21 @@ function AdminReservationsPage() {
   }, []);
 
   const loadReservations = async () => {
-    const data = await getAdminReservations();
+    try {
+      const data = await getAdminReservations();
 
-    const sortedReservations = [...data].sort((a, b) => {
-      const firstDateTime = `${a.reservation_date} ${a.reservation_time}`;
-      const secondDateTime = `${b.reservation_date} ${b.reservation_time}`;
+      const sortedReservations = [...data].sort((a, b) => {
+        const firstDateTime = `${a.reservation_date} ${a.reservation_time}`;
+        const secondDateTime = `${b.reservation_date} ${b.reservation_time}`;
 
-      return firstDateTime.localeCompare(secondDateTime);
-    });
+        return firstDateTime.localeCompare(secondDateTime);
+      });
 
-    setReservations(sortedReservations);
+      setReservations(sortedReservations);
+    } catch (error) {
+      console.error("Failed to load admin reservations:", error);
+      alert("Failed to load reservations.");
+    }
   };
 
   const handleUpdateStatus = async (id, status) => {
@@ -43,17 +48,27 @@ function AdminReservationsPage() {
       }
     }
 
-    await updateReservationStatus(id, {
-      status,
-      rejection_reason: rejectionReason,
-    });
+    try {
+      await updateReservationStatus(id, {
+        status,
+        rejection_reason: rejectionReason,
+      });
 
-    await loadReservations();
+      await loadReservations();
+    } catch (error) {
+      console.error("Failed to update reservation status:", error);
+      alert("Failed to update reservation status.");
+    }
   };
 
   const handleOpenUserProfile = async (userId) => {
-    const data = await getUserProfileById(userId);
-    setSelectedUserProfile(data);
+    try {
+      const data = await getUserProfileById(userId);
+      setSelectedUserProfile(data);
+    } catch (error) {
+      console.error("Failed to load user profile:", error);
+      alert("Failed to load user profile.");
+    }
   };
 
   const handleCloseUserProfile = () => {

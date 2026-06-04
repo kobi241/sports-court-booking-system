@@ -65,11 +65,16 @@ function AdminCourtsPage() {
   }, []);
 
   const loadData = async () => {
-    const facilitiesData = await getFacilities();
-    const courtsData = await getCourts();
+    try {
+      const facilitiesData = await getFacilities();
+      const courtsData = await getCourts();
 
-    setFacilities(facilitiesData);
-    setCourts(courtsData);
+      setFacilities(facilitiesData);
+      setCourts(courtsData);
+    } catch (error) {
+      console.error("Failed to load admin courts data:", error);
+      alert("Failed to load courts data.");
+    }
   };
 
   const handleFacilityChange = (e) => {
@@ -104,32 +109,37 @@ function AdminCourtsPage() {
       return;
     }
 
-    let result;
+    try {
+      let result;
 
-    if (editingFacilityId) {
-      result = await updateFacility(editingFacilityId, newFacility);
+      if (editingFacilityId) {
+        result = await updateFacility(editingFacilityId, newFacility);
 
-      if (result.message !== "Facility updated successfully") {
-        alert(result.message || "Facility could not be updated");
-        return;
+        if (result.message !== "Facility updated successfully") {
+          alert(result.message || "Facility could not be updated");
+          return;
+        }
+
+        alert("Facility updated successfully!");
+      } else {
+        result = await createFacility(newFacility);
+
+        if (result.message !== "Facility created successfully") {
+          alert(result.message || "Facility could not be created");
+          return;
+        }
+
+        alert("Facility created successfully!");
       }
 
-      alert("Facility updated successfully!");
-    } else {
-      result = await createFacility(newFacility);
+      setNewFacility(emptyFacilityForm);
+      setEditingFacilityId(null);
 
-      if (result.message !== "Facility created successfully") {
-        alert(result.message || "Facility could not be created");
-        return;
-      }
-
-      alert("Facility created successfully!");
+      await loadData();
+    } catch (error) {
+      console.error("Failed to save facility:", error);
+      alert("Failed to save facility.");
     }
-
-    setNewFacility(emptyFacilityForm);
-    setEditingFacilityId(null);
-
-    await loadData();
   };
 
   const handleDeleteFacility = async (facilityId) => {
@@ -137,16 +147,21 @@ function AdminCourtsPage() {
       return;
     }
 
-    const result = await deleteFacility(facilityId);
+    try {
+      const result = await deleteFacility(facilityId);
 
-    if (result.message !== "Facility deleted successfully") {
-      alert(result.message || "Facility could not be deleted");
-      return;
+      if (result.message !== "Facility deleted successfully") {
+        alert(result.message || "Facility could not be deleted");
+        return;
+      }
+
+      await loadData();
+
+      alert("Facility deleted successfully!");
+    } catch (error) {
+      console.error("Failed to delete facility:", error);
+      alert("Failed to delete facility.");
     }
-
-    await loadData();
-
-    alert("Facility deleted successfully!");
   };
 
   const handleEditFacility = (facility) => {
@@ -176,34 +191,38 @@ function AdminCourtsPage() {
       facility_id: facilityId,
     };
 
-    let result;
+    try {
+      let result;
 
-    if (editingCourtId) {
-      result = await updateCourt(editingCourtId, courtData);
+      if (editingCourtId) {
+        result = await updateCourt(editingCourtId, courtData);
 
-      if (result.message !== "Court updated successfully") {
-        alert(result.message || "Court could not be updated");
-        return;
+        if (result.message !== "Court updated successfully") {
+          alert(result.message || "Court could not be updated");
+          return;
+        }
+
+        alert("Court updated successfully!");
+      } else {
+        result = await createCourt(courtData);
+
+        if (result.message !== "Court created successfully") {
+          alert(result.message || "Court could not be created");
+          return;
+        }
+
+        alert("Court created successfully!");
       }
 
-      alert("Court updated successfully!");
-    } else {
-      result = await createCourt(courtData);
+      setNewCourt(emptyCourtForm);
+      setEditingCourtId(null);
+      setActiveCourtFormFacilityId(null);
 
-      if (result.message !== "Court created successfully") {
-        alert(result.message || "Court could not be created");
-        return;
-      }
-
-      alert("Court created successfully!");
+      await loadData();
+    } catch (error) {
+      console.error("Failed to save court:", error);
+      alert("Failed to save court.");
     }
-
-    setNewCourt(emptyCourtForm);
-
-    setEditingCourtId(null);
-    setActiveCourtFormFacilityId(null);
-
-    await loadData();
   };
 
   const handleDeleteCourt = async (courtId) => {
@@ -211,16 +230,21 @@ function AdminCourtsPage() {
       return;
     }
 
-    const result = await deleteCourt(courtId);
+    try {
+      const result = await deleteCourt(courtId);
 
-    if (result.message !== "Court deleted successfully") {
-      alert(result.message || "Court could not be deleted");
-      return;
+      if (result.message !== "Court deleted successfully") {
+        alert(result.message || "Court could not be deleted");
+        return;
+      }
+
+      await loadData();
+
+      alert("Court deleted successfully!");
+    } catch (error) {
+      console.error("Failed to delete court:", error);
+      alert("Failed to delete court.");
     }
-
-    await loadData();
-
-    alert("Court deleted successfully!");
   };
 
   const handleEditCourt = (court) => {

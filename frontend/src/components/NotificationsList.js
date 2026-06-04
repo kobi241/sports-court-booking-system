@@ -15,8 +15,13 @@ function NotificationsList({ title }) {
   }, []);
 
   const loadNotifications = async () => {
-    const data = await getNotifications();
-    setNotifications(data);
+    try {
+      const data = await getNotifications();
+      setNotifications(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Failed to load notifications:", error);
+      setNotifications([]);
+    }
   };
 
   const unreadCount = notifications.filter(
@@ -24,17 +29,25 @@ function NotificationsList({ title }) {
   ).length;
 
   const handleMarkAsRead = async (id) => {
-    await markNotificationAsRead(id);
-    await loadNotifications();
-
-    window.dispatchEvent(new Event("notificationsUpdated"));
+    try {
+      await markNotificationAsRead(id);
+      await loadNotifications();
+      window.dispatchEvent(new Event("notificationsUpdated"));
+    } catch (error) {
+      console.error("Failed to mark notification as read:", error);
+      alert("Failed to update notification.");
+    }
   };
 
   const handleMarkAllAsRead = async () => {
-    await markAllNotificationsAsRead();
-    await loadNotifications();
-
-    window.dispatchEvent(new Event("notificationsUpdated"));
+    try {
+      await markAllNotificationsAsRead();
+      await loadNotifications();
+      window.dispatchEvent(new Event("notificationsUpdated"));
+    } catch (error) {
+      console.error("Failed to mark all notifications as read:", error);
+      alert("Failed to update notifications.");
+    }
   };
 
   return (

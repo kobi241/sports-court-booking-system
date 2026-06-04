@@ -12,7 +12,13 @@ function MyReservationsPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    let user = null;
+
+    try {
+      user = JSON.parse(localStorage.getItem("user"));
+    } catch {
+      user = null;
+    }
 
     if (user?.role === "admin") {
       navigate("/admin/reservations");
@@ -24,16 +30,21 @@ function MyReservationsPage() {
   }, []);
 
   const loadReservations = async () => {
-    const data = await getReservations();
+    try {
+      const data = await getReservations();
 
-    const sortedReservations = [...data].sort((a, b) => {
-      const firstDateTime = `${a.reservation_date} ${a.reservation_time}`;
-      const secondDateTime = `${b.reservation_date} ${b.reservation_time}`;
+      const sortedReservations = [...data].sort((a, b) => {
+        const firstDateTime = `${a.reservation_date} ${a.reservation_time}`;
+        const secondDateTime = `${b.reservation_date} ${b.reservation_time}`;
 
-      return firstDateTime.localeCompare(secondDateTime);
-    });
+        return firstDateTime.localeCompare(secondDateTime);
+      });
 
-    setReservations(sortedReservations);
+      setReservations(sortedReservations);
+    } catch (error) {
+      console.error("Failed to load reservations:", error);
+      alert("Failed to load reservations.");
+    }
   };
 
   const handleDeleteReservation = async (id) => {
@@ -41,8 +52,13 @@ function MyReservationsPage() {
       return;
     }
 
-    await deleteReservation(id);
-    await loadReservations();
+    try {
+      await deleteReservation(id);
+      await loadReservations();
+    } catch (error) {
+      console.error("Failed to cancel reservation:", error);
+      alert("Failed to cancel reservation.");
+    }
   };
 
   const filteredReservations =
