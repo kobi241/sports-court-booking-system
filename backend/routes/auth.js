@@ -77,7 +77,7 @@ router.post("/login", (req, res) => {
     }
 
     if (users.length === 0) {
-      return res.status(400).json({ message: "User not found" });
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
     const user = users[0];
@@ -85,7 +85,7 @@ router.post("/login", (req, res) => {
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      return res.status(400).json({ message: "Invalid password" });
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
     const loggedInUser = {
