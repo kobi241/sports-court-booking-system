@@ -84,7 +84,7 @@ function Navbar() {
             Courts
           </Link>
 
-          <Link to="/reservations" className={getLinkClass("/reservations")}>
+          <Link to="/my-reservations" className={getLinkClass("/my-reservations")}>
             My Reservations
           </Link>
 
@@ -92,11 +92,11 @@ function Navbar() {
             My Reviews
           </Link>
 
-          <Link to="/profile" className={getLinkClass("/profile")}>
+          <Link to="/my-profile" className={getLinkClass("/my-profile")}>
             Profile
           </Link>
 
-          <Link to="/notifications" className={getLinkClass("/notifications")}>
+          <Link to="/my-notifications" className={getLinkClass("/my-notifications")}>
             {notificationText}
           </Link>
 

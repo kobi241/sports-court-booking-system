@@ -21,7 +21,7 @@ function LoginPage() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://88.200.63.148:5000/auth/login", {
+      const response = await fetch("/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

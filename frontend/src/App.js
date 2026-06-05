@@ -31,7 +31,7 @@ function App() {
           />
 
           <Route
-            path="/reservations"
+            path="/my-reservations"
             element={
               <ProtectedRoute allowedRoles={["user"]}>
                 <MyReservationsPage />
@@ -47,7 +47,7 @@ function App() {
             }
           />
           <Route
-            path="/profile"
+            path="/my-profile"
             element={
               <ProtectedRoute allowedRoles={["user"]}>
                 <ProfilePage />
@@ -55,7 +55,7 @@ function App() {
             }
           />
           <Route
-            path="/notifications"
+            path="/my-notifications"
             element={
               <ProtectedRoute allowedRoles={["user"]}>
                 <MyNotificationsPage />

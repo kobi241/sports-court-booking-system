@@ -33,7 +33,7 @@ function RegisterPage() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://88.200.63.148:5000/auth/register", {
+      const response = await fetch("/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
